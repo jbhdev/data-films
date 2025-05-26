@@ -24,3 +24,5 @@ st.write(
             "Quantity": [0, 1, 0, 3]}
     )
 )
+if st.button("Ajouter"):
+    st.write("+1")
