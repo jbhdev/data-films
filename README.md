@@ -32,5 +32,5 @@ Bienvenue dans **Movie Recommender App**, une application web de recommandation 
 1. **Cloner le dépôt** :
 
    ```bash
-   git clone https://github.com/zaafir8ç/data-films.git
+   git clone https://github.com/zaafir89/data-films.git
    cd movie-recommender-app
