@@ -8,7 +8,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("Bienvenue sur mon application Streamlit")
+st.title("Bienvenue sur Recommandion App")
 st.write("Utilisez le menu à gauche pour naviguer entre les pages.")
 
 
