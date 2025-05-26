@@ -33,4 +33,4 @@ Bienvenue dans **Movie Recommender App**, une application web de recommandation 
 
    ```bash
    git clone https://github.com/jbhdev/data-films.git
-   cd movie-recommender-app
+   
