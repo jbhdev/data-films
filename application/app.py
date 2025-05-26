@@ -3,7 +3,7 @@ import pandas as pd
 
 st.set_page_config(
     page_title="Mon Application à 5 Pages",
-   page_icon="📘",
+    page_icon="📘",
     layout="wide",
     initial_sidebar_state="expanded"
 )
