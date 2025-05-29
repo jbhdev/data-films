@@ -1,0 +1,129 @@
+.stApp {
+    background-color: #000;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+}
+.css-1d3f8gv { /* Classe pour le conteneur principal de Streamlit */
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+}
+
+/* Styles du carrousel principal */
+.carousel-container {
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-slide {
+    display: none; /* Masqué par défaut */
+    width: 100%;
+    height: auto;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: auto;
+    display: block; /* Supprime l'espace supplémentaire sous l'image */
+    border-radius: 12px;
+}
+
+/* Animation de fondu */
+.fade {
+    animation-name: fade;
+    animation-duration: 1.5s;
+}
+
+@keyframes fade {
+    from {opacity: .4}
+    to {opacity: 1}
+}
+
+/* Points/indicateurs */
+.carousel-dots {
+    text-align: center;
+    padding: 10px;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    z-index: 1;
+}
+
+.dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 5px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+    background-color: #717171;
+}
+
+/* Styles du carrousel Moviestar (bannière) */
+.moviestar-carousel-container {
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+.moviestar-carousel-slide {
+    display: none; /* Masqué par défaut */
+    width: 100%;
+    height: auto;
+}
+
+.moviestar-carousel-slide img {
+    width: 100%;
+    height: auto;
+    display: block; /* Supprime l'espace supplémentaire sous l'image */
+    border-radius: 12px;
+}
+
+/* Points/indicateurs Moviestar */
+.moviestar-carousel-dots {
+    text-align: center;
+    padding: 10px;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    z-index: 1;
+}
+
+.moviestar-dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 5px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.moviestar-active, .moviestar-dot:hover {
+    background-color: #717171;
+}
+
+.stAppHeader {
+    display: none;
+}
+
+.footer {
+    margin-top: 20%;
+    margin-bottom: 20%;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}
+
