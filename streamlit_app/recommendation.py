@@ -88,6 +88,7 @@ def recommend_by_actors(index: int,
     # Retourne les colonnes utiles
     return filtered[["original_title", "popularity", "runtimeMinutes", "poster_url"]].head(top_n)
 
+
 def recommend_similar_items(index: int, n_neighbors: int = 5) -> pd.DataFrame:
     """Recommande des films similaires."""
     distances, indices = nn_model.kneighbors(df_processed[index].reshape(1, -1), n_neighbors=n_neighbors)
