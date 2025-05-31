@@ -4,3 +4,5 @@ nn_distances.pkl
 nn_model.pkl
 processed_films.pkl
 Essai.ipynb
+__pycache__/
+*.pyc
