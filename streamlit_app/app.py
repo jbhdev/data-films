@@ -7,20 +7,30 @@ from search import search_page
 from movie_detail import movie_detail_page
 from utils.css_loader import load_css # Import the CSS loader utility
 
+
+def init_session_state():
+    defaults = {
+        'current_page': 'home',
+        # Futur exemple : 'user_pic_url': "https://placehold.co/60x60/663399/ffffff?text=User"
+    }
+    for key, value in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
+
 # Main application logic
 def main():
     st.set_page_config(
         page_title="Moviestar App",
         layout="wide",
         page_icon="assets/moviestar.png",  # Path to your logo
-        
     )
+    init_session_state()  # Init session state
 
     #Load global CSS
     load_css("style.css")
+
     # Load sidebar specific CSS
     load_css("sidebar_style.css")
-
 
     # Initialize session state for page if not already set
     if 'current_page' not in st.session_state:
@@ -50,8 +60,10 @@ def main():
         # Removed: Login Button and its container
 
         # User profile
+        # Profil utilisateur (prévu pour être dynamique plus tard)
         st.markdown('<div class="sidebar-profile-container">', unsafe_allow_html=True)
-        st.image("https://placehold.co/60x60/663399/ffffff?text=User", width=60, clamp=True) # Placeholder for user profile pic
+        user_pic_url = st.session_state.get("user_pic_url", "https://placehold.co/60x60/663399/ffffff?text=User")
+        st.image(user_pic_url, width=60, clamp=True)
         st.markdown("<p class='sidebar-profile-name'>Johnbie</p>", unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 

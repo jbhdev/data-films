@@ -129,3 +129,29 @@
 .stSidebarNav{
     display: none !important;
 }
+
+/* dfcgvhbjnukoiuydswxdcfvgbhjnk,ljxdsxfcgvhbjnk,l;m,kjbhvgcfxdfcgvhbjnk,lvgcfxdscfvgkljbhvgcfd */ 
+
+img:hover {
+    transform: scale(1.03);
+    transition: 0.3s ease;
+}
+
+button {
+    background-color: #663399;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #512b8b;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 50px;
+    color: #aaa;
+}
