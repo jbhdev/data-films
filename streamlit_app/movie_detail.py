@@ -27,9 +27,9 @@ def movie_detail_page():
                 <img src="{movie_data.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}" width="300" height="450">
                 <div class="movie-details">
                     <h1>{selected_movie}</h1>
-                    <p>{movie_data.get('startYear', 'Année inconnue')} | {movie_data.get('runtimeMinutes', 'Durée inconnue')} min</p>
+                    <p>{movie_data.get('startYear', 'Année inconnue')} || {movie_data.get('genres', 'Genre inconnu')} || {movie_data.get('runtimeMinutes', 'Durée inconnue')} min</p>
                     <p>{movie_data.get('overview', 'Pas de description disponible.')}</p>
-                    <p>Avec : {movie_data.get('acteurs_1', 'Acteurs inconnus')},{movie_data.get('acteurs_2', 'Acteurs inconnus')},{movie_data.get('actrices', 'Acteurs inconnus')}</p>
+                    <p>Avec : {movie_data.get('acteurs_1', 'Acteurs inconnus')}, {movie_data.get('acteurs_2', 'Acteurs inconnus')}, {movie_data.get('actrices', 'Acteurs inconnus')}</p>
                     <p>Réalisateur : {movie_data.get('realisateurs', 'Realisateur inconnu')}</p>
                     <div class="movie-actions">
                         <button>🎬 Lancer</button>
@@ -45,28 +45,28 @@ def movie_detail_page():
         # Afficher les recommandations
         st.markdown("<h2 style='color: #fff;'>Titres similaires</h2>", unsafe_allow_html=True)
 
-        recommendations = get_recommendations_by_title(selected_movie, n=4)
+        recommendations = get_recommendations_by_title(selected_movie, n=5)
 
         if not recommendations.empty:
             cols = st.columns(len(recommendations))
             for i, (_, row) in enumerate(recommendations.iterrows()):
                 with cols[i]:
-                    st.image(row.get("poster_url", "https://placehold.co/200x300?text=No+Image"), use_container_width=True)
+                    st.image(row.get("poster_url", "https://placehold.co/400x500?text=No+Image"), use_container_width=True)
                     st.markdown(
                         f"<p style='color: #fff; font-weight: bold; font-size: 14px;'>{row['original_title']}</p>",
                         unsafe_allow_html=True
                     )
                 # Recommandations par acteurs communs
-        st.markdown("<h2 style='color: #fff;'>Acteurs communs</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='color: #fff;'>Autres films avec vos acteurs préférés</h2>", unsafe_allow_html=True)
 
         index = get_film_index_by_title(selected_movie)
-        actor_recs = recommend_by_actors(index=index, top_n=4)
+        actor_recs = recommend_by_actors(index=index, top_n=5)
 
         if not actor_recs.empty:
             cols = st.columns(len(actor_recs))
             for i, (_, row) in enumerate(actor_recs.iterrows()):
                 with cols[i]:
-                    st.image(row.get("poster_url", "https://placehold.co/200x300?text=No+Image"), use_container_width=True)
+                    st.image(row.get("poster_url", "https://placehold.co/400x500?text=No+Image"), use_container_width=True)
                     st.markdown(
                         f"<p style='color: #fff; font-weight: bold; font-size: 14px;'>{row['original_title']}</p>",
                         unsafe_allow_html=True
