@@ -9,7 +9,7 @@ def home_page():
     
 
     # --- Moviestar Banner Section (single image) ---
-    st.markdown("<h1 style='color: #fff;'>Déjà sur Moviestar</h2>", unsafe_allow_html=True)
+    st.markdown("<h1 style='color: #fff;'>Déjà sur Moviestar</h1>", unsafe_allow_html=True)
 
     st.image("https://disney.images.edge.bamgrid.com/ripcut-delivery/v2/variant/disney/415b599e-9d55-4809-9dbc-38bd89fe14ac/compose?format=webp&label=hero_carousel_none_300&width=2880", use_container_width=True,
              caption="American Dad, Saison 20 disponible dès maintenant, 2005, Comédie, Animation",
@@ -45,5 +45,10 @@ def home_page():
                 """,
                 unsafe_allow_html=True
             )
+            if st.button(f"Voir le film", key=f"home_btn_{movie['title']}"):
+                st.session_state.selected_movie = movie  # Stocke tout l'objet
+                st.session_state.current_page = "movie"
+                # Ajoute dans le callback du bouton 
+                st.session_state.current_page = "movie_detail"  # À rediriger dans le fichier principal
+                st.rerun()  # Force la redirection
 
- 

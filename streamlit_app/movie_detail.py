@@ -1,29 +1,40 @@
 import streamlit as st
 from utils.css_loader import load_css
+from recommendation import get_recommendations_by_title, recommend_by_actors, films, get_film_index_by_title
 
+def select_movie(title):
+    """Met à jour le film sélectionné et recharge la page."""
+    st.session_state.selected_movie = title
+    st.experimental_rerun()
+    
 def movie_detail_page():
-        """
-        Displays the movie detail page content.
-        """
-        load_css("movie_style.css") # Load specific CSS for this page
+    load_css("movie_style.css")  # Charge le CSS spécifique à cette page
 
-        st.markdown("<h1 style='text-align: center; color: #fff;'>Movie Details</h1>", unsafe_allow_html=True)
-        st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #fff;'>Détails du Film</h1>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
 
+    # Choisir un film depuis le dataset
+    selected_movie = st.selectbox("Choisissez un film :", sorted(films["original_title"].dropna().unique()))
+
+    # Si un film est sélectionné
+    if selected_movie:
+        movie_data = films[films["original_title"] == selected_movie].iloc[0]
+
+        # Affichage des infos du film sélectionné
         st.markdown(
-            """
+            f"""
             <div class="movie-header">
-                <img src="https://i.pinimg.com/1200x/c0/37/40/c03740709286733cfce2f0e805147138.jpg" width="300" height="450"; height:auto; border-radius:12px;">
+                <img src="{movie_data.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}" width="300" height="450">
                 <div class="movie-details">
-                    <h1>MULAN</h1>
-                    <p>12+ HD CC AD | 2020 - 1h 59 min | Drama, Action and adventure</p>
-                    <p>
-                        In China, a young woman takes all risks and becomes a legendary warrior.
-                    </p>
+                    <h1>{selected_movie}</h1>
+                    <p>{movie_data.get('startYear', 'Année inconnue')} | {movie_data.get('runtimeMinutes', 'Durée inconnue')} min</p>
+                    <p>{movie_data.get('overview', 'Pas de description disponible.')}</p>
+                    <p>Avec : {movie_data.get('acteurs_1', 'Acteurs inconnus')},{movie_data.get('acteurs_2', 'Acteurs inconnus')},{movie_data.get('actrices', 'Acteurs inconnus')}</p>
+                    <p>Réalisateur : {movie_data.get('realisateurs', 'Realisateur inconnu')}</p>
                     <div class="movie-actions">
-                        <button>PLAY</button>
-                        <button>TRAILER</button>
-                        <button>+</button>
+                        <button>🎬 Lancer</button>
+                        <button>🎞️ Bande-annonce</button>
+                        <button>➕ Ajouter à ma liste</button>
                     </div>
                 </div>
             </div>
@@ -31,26 +42,35 @@ def movie_detail_page():
             unsafe_allow_html=True
         )
 
-        st.markdown("<h2 style='color: #fff;'>Suggestions</h2>", unsafe_allow_html=True)
-        
+        # Afficher les recommandations
+        st.markdown("<h2 style='color: #fff;'>Titres similaires</h2>", unsafe_allow_html=True)
 
-        suggestions = [
-            {"title": "DEADPOOL AND WOLVERINE", "image": "https://disney.images.edge.bamgrid.com/ripcut-delivery/v2/variant/disney/6ce1f5bd-92aa-4d3b-83d7-1d72c0fd3859/compose?format=webp&label=poster_vertical_080&width=800"},
-            {"title": "INDIANA JONES", "image": "https://disney.images.edge.bamgrid.com/ripcut-delivery/v2/variant/disney/bc756a67-89b8-471f-8056-c52ad3804b97/compose?format=webp&label=poster_vertical_080&width=800"},
-            {"title": "BREF 2", "image": "https://disney.images.edge.bamgrid.com/ripcut-delivery/v2/variant/disney/f9fd76f4-72be-4d04-9007-5c7da732913b/compose?format=webp&label=poster_vertical_star-original_080&width=800"},
-            {"title": "SHOGUN", "image": "https://disney.images.edge.bamgrid.com/ripcut-delivery/v2/variant/disney/cae42e93-635b-438b-a67a-776348546a7e/compose?format=webp&label=poster_vertical_star-original_080&width=800"},
-            {"title": "PARADISE", "image": "https://disney.images.edge.bamgrid.com/ripcut-delivery/v2/variant/disney/790c8f5b-d6c1-4238-b75f-47838546a897/compose?format=webp&label=poster_vertical_star-original_080&width=800"},
-        ]
+        recommendations = get_recommendations_by_title(selected_movie, n=4)
 
-        # Create a single row of 5 columns for suggestions
-        cols_suggestions = st.columns(5) # Assuming always 5 suggestions for a single row
+        if not recommendations.empty:
+            cols = st.columns(len(recommendations))
+            for i, (_, row) in enumerate(recommendations.iterrows()):
+                with cols[i]:
+                    st.image(row.get("poster_url", "https://placehold.co/200x300?text=No+Image"), use_container_width=True)
+                    st.markdown(
+                        f"<p style='color: #fff; font-weight: bold; font-size: 14px;'>{row['original_title']}</p>",
+                        unsafe_allow_html=True
+                    )
+                # Recommandations par acteurs communs
+        st.markdown("<h2 style='color: #fff;'>Acteurs communs</h2>", unsafe_allow_html=True)
 
-        for i, suggestion in enumerate(suggestions):
-            with cols_suggestions[i]:
-                st.image(suggestion["image"], use_container_width=True)
-                st.markdown(
-                    f"""
-                    <p style='color: #fff; font-weight: bold; margin-bottom: 2px; font-size: 14px;'>{suggestion["title"]}</p>
-                    """,
-                    unsafe_allow_html=True
-                )
+        index = get_film_index_by_title(selected_movie)
+        actor_recs = recommend_by_actors(index=index, top_n=4)
+
+        if not actor_recs.empty:
+            cols = st.columns(len(actor_recs))
+            for i, (_, row) in enumerate(actor_recs.iterrows()):
+                with cols[i]:
+                    st.image(row.get("poster_url", "https://placehold.co/200x300?text=No+Image"), use_container_width=True)
+                    st.markdown(
+                        f"<p style='color: #fff; font-weight: bold; font-size: 14px;'>{row['original_title']}</p>",
+                        unsafe_allow_html=True
+                    )
+
+        else:
+            st.info("Aucune recommandation disponible pour ce film.")

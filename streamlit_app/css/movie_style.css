@@ -82,3 +82,56 @@
     color: #999;
     font-size: 14px;
 }
+
+
+/* ------------------------------------------------------------------------------------------------ */
+img:hover {
+    transform: scale(1.03);
+    transition: 0.3s ease;
+}
+
+button {
+    background-color: #663399;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #512b8b;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 50px;
+    color: #aaa;
+}
+
+.movie-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.movie-actions button {
+    background-color: #663399;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.movie-actions button:hover {
+    background-color: #864bdc;
+    transform: scale(1.05);
+}
+
+.stAppHeader {
+    display: none;
+}
