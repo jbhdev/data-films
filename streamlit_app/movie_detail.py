@@ -6,7 +6,7 @@ def select_movie(title):
     """Met à jour le film sélectionné et recharge la page."""
     st.session_state.selected_movie = title
     st.experimental_rerun()
-    
+
 def movie_detail_page():
     load_css("movie_style.css")  # Charge le CSS spécifique à cette page
 
@@ -16,9 +16,14 @@ def movie_detail_page():
     # Choisir un film depuis le dataset
     selected_movie = st.selectbox("Choisissez un film :", sorted(films["original_title"].dropna().unique()))
 
+    # Initialiser l'état d'affichage de la bande-annonce
+    if "show_trailer" not in st.session_state:
+        st.session_state.show_trailer = False
+
     # Si un film est sélectionné
     if selected_movie:
         movie_data = films[films["original_title"] == selected_movie].iloc[0]
+        trailer_url = movie_data.get('trailer_url')
 
         # Affichage des infos du film sélectionné
         st.markdown(
@@ -33,7 +38,6 @@ def movie_detail_page():
                     <p>Réalisateur : {movie_data.get('realisateurs', 'Realisateur inconnu')}</p>
                     <div class="movie-actions">
                         <button>🎬 Lancer</button>
-                        <button>🎞️ Bande-annonce</button>
                         <button>➕ Ajouter à ma liste</button>
                     </div>
                 </div>
@@ -42,11 +46,35 @@ def movie_detail_page():
             unsafe_allow_html=True
         )
 
-        # Afficher les recommandations
+        # Bouton toggle pour afficher la bande-annonce
+        if st.button("🎞️ Voir la bande-annonce" if not st.session_state.show_trailer else "❌ Cacher la bande-annonce"):
+            st.session_state.show_trailer = not st.session_state.show_trailer
+
+        # Affichage de la bande-annonce si activée
+        if st.session_state.show_trailer and trailer_url:
+            if "watch?v=" in trailer_url:
+                youtube_id = trailer_url.split("watch?v=")[-1]
+            elif "youtu.be/" in trailer_url:
+                youtube_id = trailer_url.split("youtu.be/")[-1]
+            else:
+                youtube_id = None
+
+            if youtube_id:
+                st.markdown(
+                    f"""
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; margin-top: 20px;">
+                        <iframe src="https://www.youtube.com/embed/{youtube_id}" 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
+                                frameborder="0" allowfullscreen>
+                        </iframe>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+        # Recommandations basées sur le contenu
         st.markdown("<h2 style='color: #fff;'>Titres similaires</h2>", unsafe_allow_html=True)
-
         recommendations = get_recommendations_by_title(selected_movie, n=5)
-
         if not recommendations.empty:
             cols = st.columns(len(recommendations))
             for i, (_, row) in enumerate(recommendations.iterrows()):
@@ -56,12 +84,11 @@ def movie_detail_page():
                         f"<p style='color: #fff; font-weight: bold; font-size: 14px;'>{row['original_title']}</p>",
                         unsafe_allow_html=True
                     )
-                # Recommandations par acteurs communs
-        st.markdown("<h2 style='color: #fff;'>Autres films avec vos acteurs préférés</h2>", unsafe_allow_html=True)
 
+        # Recommandations basées sur les acteurs
+        st.markdown("<h2 style='color: #fff;'>Autres films avec vos acteurs préférés</h2>", unsafe_allow_html=True)
         index = get_film_index_by_title(selected_movie)
         actor_recs = recommend_by_actors(index=index, top_n=5)
-
         if not actor_recs.empty:
             cols = st.columns(len(actor_recs))
             for i, (_, row) in enumerate(actor_recs.iterrows()):
@@ -71,6 +98,6 @@ def movie_detail_page():
                         f"<p style='color: #fff; font-weight: bold; font-size: 14px;'>{row['original_title']}</p>",
                         unsafe_allow_html=True
                     )
-
         else:
             st.info("Aucune recommandation disponible pour ce film.")
+            
