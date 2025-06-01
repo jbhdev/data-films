@@ -13,7 +13,9 @@ distances_all, indices_all = joblib.load('C:/Users/sirnb/OneDrive/Bureau/WildCod
 films['poster_path'] = films['poster_path'].fillna('')
 films['poster_url'] = "https://image.tmdb.org/t/p/w500" + films['poster_path']
 
+## --------------------------------------------------------------------------------------------------------------------------------------------------------
 
+## Fonctions
 def get_film_index_by_title(title: str):
     """Trouve l'index du film dans la base originale à partir du titre."""
     try:

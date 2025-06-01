@@ -1,3 +1,29 @@
+/* Style des boutons de pagination actifs */
+.stButton>button.page-btn-active {
+    background-color: #4285f4;
+    color: white;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-weight: bold;
+    border: none;
+    margin: 0 3px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.stButton>button.page-btn {
+    background-color: #f1f3f4;
+    color: #202124;
+    border-radius: 20px;
+    padding: 6px 12px;
+    margin: 0 3px;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.stButton>button.page-btn:hover {
+    background-color: #e0e0e0;
+}
+
 /* Styles spécifiques à la page de détails du film */
 .stApp {
     background-color: #0a0a0a; /* Un fond encore plus sombre pour la page de film */
@@ -134,4 +160,93 @@ button:hover {
 
 .stAppHeader {
     display: none;
+}
+a {
+    text-decoration: none;
+}
+a:hover img {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.pagination-wrapper {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.page-btn {
+    background-color: transparent;
+    color: #4285f4;
+    font-size: 18px;
+    font-weight: 500;
+    border: none;
+    margin: 4px;
+    padding: 6px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.page-btn:hover {
+    background-color: rgba(66, 133, 244, 0.1);
+}
+
+.page-btn-active {
+    color: black;
+    background-color: #e8f0fe;
+    font-weight: bold;
+    cursor: default;
+}
+
+.page-btn-active:hover {
+    background-color: #e8f0fe;
+}
+.page-btn {
+    background-color: #f1f3f4;
+    color: #202124;
+    border-radius: 20px;
+    padding: 6px 12px;
+    margin: 0 5px;
+    font-weight: 500;
+    font-size: 16px;
+    border: none;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.page-btn-active {
+    background-color: #4285f4;
+    color: white;
+    border-radius: 20px;
+    padding: 6px 12px;
+    margin: 0 5px;
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    box-shadow: 0 2px 6px rgba(66, 133, 244, 0.4);
+}
+.page-btn, .page-btn-active {
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 20px;
+    padding: 6px 12px;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    text-align: center;
+}
+
+.page-btn {
+    background-color: #f1f3f4;
+    color: #202124;
+}
+
+.page-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.page-btn-active {
+    background-color: #4285f4;
+    color: white;
 }
