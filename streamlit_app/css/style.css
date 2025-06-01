@@ -155,3 +155,10 @@ button:hover {
     margin-top: 50px;
     color: #aaa;
 }
+a {
+    text-decoration: none;
+}
+a:hover img {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
