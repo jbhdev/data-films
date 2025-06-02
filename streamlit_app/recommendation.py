@@ -2,13 +2,14 @@
 
 import pandas as pd
 import joblib
+import os
 from sklearn.neighbors import NearestNeighbors
 
-# Chargement des fichiers nécessaires
-films = pd.read_csv('C:/Users/sirnb/OneDrive/Bureau/WildCode/Projets/Projet_2_App/Scripts/datasets/raw/films.csv')  # Mets à jour le bon chemin
-df_processed = joblib.load('C:/Users/sirnb/OneDrive/Bureau/WildCode/Projets/Projet_2_App/Scripts/datasets/raw/processed_films.pkl')
-nn_model = joblib.load('C:/Users/sirnb/OneDrive/Bureau/WildCode/Projets/Projet_2_App/Scripts/datasets/raw/nn_model.pkl')
-distances_all, indices_all = joblib.load('C:/Users/sirnb/OneDrive/Bureau/WildCode/Projets/Projet_2_App/Scripts/datasets/raw/nn_distances.pkl')
+
+films = pd.read_csv('datasets/raw/films.csv')
+df_processed = joblib.load('datasets/raw/processed_films.pkl')
+nn_model = joblib.load('datasets/raw/nn_model.pkl')
+distances_all, indices_all = joblib.load('datasets/raw/nn_distances.pkl')
 
 films['poster_path'] = films['poster_path'].fillna('')
 films['poster_url'] = "https://image.tmdb.org/t/p/w500" + films['poster_path']
