@@ -1,4 +1,5 @@
 import streamlit as st
+import ast
 from utils.css_loader import load_css
 import string
 from recommendation import (
@@ -18,7 +19,7 @@ def movie_detail_page():
     st.markdown(""" <style>div[class*="stRadio"] > label {font-size: 100px !important;padding: 50px 100px;
     }div[class*="stRadio"] > div {gap: 20px;} </style>
                 """, unsafe_allow_html=True)
-    
+
     selected_letter = st.radio("Filtrer par lettre", all_letters,label_visibility="hidden", horizontal=True)
 
     def starts_with_letter(title):
@@ -76,7 +77,7 @@ def movie_detail_page():
     pages = []
     num_start_pages = 4
     num_end_pages = 4
-    range_buffer = 2
+    range_buffer = 4
 
     if total_pages <= (num_start_pages + num_end_pages + 2 * range_buffer + 2):
         pages = list(range(1, total_pages + 1))
@@ -95,10 +96,9 @@ def movie_detail_page():
     for idx, p in enumerate(pages):
         with pagination_cols[idx]:
             if p == "...":
-                st.markdown("<span style='margin: 6px; color: #ccc;'>…</span>", unsafe_allow_html=True)
+                st.markdown("<span style='margin: 8px; color: #red;'>…</span>", unsafe_allow_html=True)
             else:
                 if p == st.session_state.movie_page:
-                    # Page active : bouton différent
                     st.markdown(
                         f"""
                         <div style="padding: 8px 16px; background-color: gold; color: black; 
@@ -114,10 +114,9 @@ def movie_detail_page():
                         st.rerun()
 
     st.markdown("<hr>", unsafe_allow_html=True)
+
 def show_movie_details(title):
     load_css("movie_style.css")
-    st.markdown(f"<h1 style='text-align: center; color: #fff;'>{title}</h1>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
 
     movie_data = films[films["original_title"] == title]
     if movie_data.empty:
@@ -127,40 +126,80 @@ def show_movie_details(title):
     movie = movie_data.iloc[0]
     trailer_url = movie.get("trailer_url")
 
+    st.markdown(f"<h1 style='text-align: center; color: #fff;'>{title} ({movie.get('startYear', 'Année inconnue')})</h1>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
     if "show_trailer" not in st.session_state:
         st.session_state.show_trailer = False
 
     vote_average = movie.get('vote_average', 0)
     stars = "★" * int(round(float(vote_average) / 2)) + "☆" * (5 - int(round(float(vote_average) / 2)))
 
-    st.markdown(
-        f"""
-        <div class="movie-header">
-            <img src="{movie.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}" width="300" height="450">
-            <div class="movie-details">
-                <p>{movie.get('startYear', 'Année inconnue')} || {movie.get('genres', 'Genre inconnu')} || {movie.get('runtimeMinutes', 'Durée inconnue')} min</p>
-                <p>{movie.get('overview', 'Pas de description disponible.')}</p>
-                <p style="color: white;">
-                    {vote_average} / 10<br>
-                    <span style="color: gold; font-size: 20px;">{stars}</span>
-                </p>
-                <p>Avec : {movie.get('acteurs_1')}, {movie.get('acteurs_2')}, {movie.get('actrices')}</p>
-                <p>Réalisateur : {movie.get('realisateurs')}</p>
-                <div class="movie-actions">
-                    <button>🎬 Lancer</button>
-                    <button>➕ Ajouter à ma liste</button>
-                </div>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    # Structure principale : affiche + détails côte à côte
+    cols = st.columns([1, 2])
 
-    youtube_id = None
-    if isinstance(trailer_url, str):
-        if "watch?v=" in trailer_url:
+    with cols[0]:
+        st.image(movie.get('poster_url', 'https://placehold.co/300x450?text=No+Image'), width=450)
+
+    with cols[1]:
+        # Convertir genres (liste) en chaîne
+        genres = movie.get('genres', 'Genre inconnu')
+        try:
+            # Tenter de transformer la string en liste Python
+            genres_list = ast.literal_eval(genres) if isinstance(genres, str) else genres
+            if isinstance(genres_list, list):
+                genres = ", ".join(genres_list)
+            else:
+                genres = str(genres)
+        except:
+            genres = str(genres)
+
+        # Calcul note, couleur et emoji
+        vote_average = movie.get("vote_average", 0)
+        if vote_average >= 7:
+            note_color = "limegreen"
+        elif vote_average >= 5:
+            note_color = "orange"
+        else:
+            note_color = "crimson"
+
+        # Convertir la note en étoiles
+        stars = "⭐" * int(round(vote_average)/2) + "☆" * (5 - int(round(vote_average / 2)))
+
+        # Affichage final
+        st.markdown(f"""
+            <div style="color: white; font-size: 20px;">
+                <p style="margin-bottom: 0;">
+                    {movie.get('release_date', 'Date de sortie inconnue')} | {genres} | {movie.get('runtimeMinutes', 'Durée inconnue')} min
+                </p>
+                <p></p>
+                <p style="color:white; font-size: 18px;font-weight: bold; margin-bottom: 8px;">Synopsis :</p>
+                <p style="color:white; margin-top: 0;text-align: justify;">{movie.get('overview', 'Pas de description disponible.')}</p>
+                <p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">Notes :</p>
+                <p style="color:{note_color}; font-size: 24px; font-weight: bold; margin: 0;">
+                {vote_average:.2f} / 10 
+                </p>
+                <p style="font-size: 28px; color: {note_color}; margin: 5px 0 0 0;">
+                    {stars}</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+        # Boutons côte à côte
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("🎬 Bande Annonce"):
+                st.session_state.show_trailer = not st.session_state.show_trailer
+        with col2:
+            st.button("➕ Ajouter à ma liste")
+
+
+    # Bande annonce sous les boutons si activé
+    if st.session_state.show_trailer and trailer_url:
+        youtube_id = None
+
+        if isinstance(trailer_url, str) and"watch?v=" in trailer_url:
             youtube_id = trailer_url.split("watch?v=")[-1]
-        elif "youtu.be/" in trailer_url:
+        elif isinstance(trailer_url, str) and "youtu.be/" in trailer_url:
             youtube_id = trailer_url.split("youtu.be/")[-1]
 
         if youtube_id:
@@ -168,13 +207,92 @@ def show_movie_details(title):
                 f"""
                 <div style="position: relative; padding-bottom: 56.25%; height: 0; margin-top: 20px;">
                     <iframe src="https://www.youtube.com/embed/{youtube_id}" 
-                            style="position: absolute; top: 0; left: 0; width: 50%; height: 50%;" 
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
                             frameborder="0" allowfullscreen>
                     </iframe>
                 </div>
                 """,
                 unsafe_allow_html=True
             )
+        else:
+            # Pas de trailer ou URL non reconnue, on affiche un message à la place
+            st.markdown("### Bande annonce indisponible 😞", unsafe_allow_html=True)
+
+    # Acteurs principaux
+    st.markdown("<h2 style='color: #fff; margin-top: 30px;'>Acteurs principaux</h2>", unsafe_allow_html=True)
+    base_url = "https://image.tmdb.org/t/p/w500"
+
+    acteurs = [
+        {"nom": movie.get("acteurs_1", ""), "poster": movie.get("actors_1_posters", "")},
+        {"nom": movie.get("acteurs_2", ""), "poster": movie.get("actors_2_posters", "")},
+        {"nom": movie.get("actrices", ""), "poster": movie.get("actress_1_posters", "")},
+    ]
+
+    acteur_cols = st.columns(len(acteurs))
+    for i, acteur in enumerate(acteurs):
+        poster_path = acteur['poster'].strip() if acteur['poster'] else ''
+        if poster_path and not poster_path.startswith("http"):
+            poster_url = base_url + poster_path
+        else:
+            poster_url = poster_path or 'https://placehold.co/150x225?text=No+Image'
+
+        with acteur_cols[i]:
+            st.markdown(
+                f"""
+                <div style='text-align: center;'>
+                    <a href="?actor={acteur['nom']}" style="text-decoration: none; color: inherit;">
+                        <img src="{poster_url}" 
+                            style="
+                                width: 300px;
+                                height: 300px;
+                                object-fit: cover;
+                                border-radius: 10%;
+                                border: 1px solid white;
+                                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+                            ">
+                        <p style='color: white; font-weight: bold; margin-top: 8px;font-size: 18px;'>{acteur['nom']}</p>
+                    </a>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+    # Bloc réalisateur sous les acteurs
+    st.markdown("<h2 style='color: #fff; margin-top: 40px;'>Réalisateur</h2>", unsafe_allow_html=True)
+
+    realisateur_nom = movie.get('realisateurs', 'Inconnu')
+    realisateur_poster = movie.get('directors_1_posters', '')  # À adapter si tu as une URL / chemin d'image pour le réalisateur
+    if realisateur_poster and not realisateur_poster.startswith("http"):
+        realisateur_poster = base_url + realisateur_poster
+    elif not realisateur_poster:
+        realisateur_poster = "https://placehold.co/150x225?text=No+Image"
+
+    col_real = st.columns(1)
+    with col_real[0]:
+        st.markdown(
+            f"""
+            <div style='text-align: center; margin-bottom: 40px;'>
+                    <img src="{realisateur_poster}" 
+                        style="
+                            width: 300px;
+                            height: 300px;
+                            object-fit: cover;
+                            border-radius: 10%;
+                            border: 1px solid white;
+                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+                        ">
+                    <p style='color: white; font-weight: bold; margin-top: 8px;font-size: 18px;'>{realisateur_nom}</p> 
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+## ___________________________________________________________________________________________________________________________
+## ----------------------------- Recommandations -----------------------------------------------------------------------------
+## ___________________________________________________________________________________________________________________________
+
+
+## Recommandations par titre
 
     st.markdown("<h2 style='color: #fff;'>Titres similaires</h2>", unsafe_allow_html=True)
     recommendations = get_recommendations_by_title(title, n=5)
@@ -186,11 +304,13 @@ def show_movie_details(title):
                     f"""
                     <a href="?movie={row['original_title']}" style="text-decoration: none;">
                         <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}" style="width:100%; border-radius: 10px;">
-                        <p style='color: white; text-align: center;'>{row['original_title']}</p>
+                        <p style='color: white; font-weight: bold; font-size: 18px; text-align: center;'>{row['original_title']}</p>
                     </a>
                     """,
                     unsafe_allow_html=True
                 )
+
+## Recommandations par acteurs
 
     st.markdown("<h2 style='color: #fff;'>Autres films avec vos acteurs préférés</h2>", unsafe_allow_html=True)
     index = get_film_index_by_title(title)
@@ -203,10 +323,11 @@ def show_movie_details(title):
                     f"""
                     <a href="?movie={row['original_title']}" style="text-decoration: none;">
                         <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}" style="width:100%; border-radius: 10px;">
-                        <p style='color: white; text-align: center;'>{row['original_title']}</p>
+                        <p style='color: white; font-weight: bold; font-size: 18px; text-align: center;'>{row['original_title']}</p>
                     </a>
                     """,
                     unsafe_allow_html=True
                 )
     else: 
         st.info("Aucune recommandation basée sur les acteurs.")
+
