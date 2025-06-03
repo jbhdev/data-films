@@ -1,0 +1,193 @@
+/* Thème général de l'application */
+.stApp {
+    background-color: #313131; /* Fond noir */
+    color: #fff; /* Texte blanc */
+    font-family: 'Inter', sans-serif; /* Police moderne */
+}
+
+/* Masquer l'en-tête de l'application Streamlit */
+.stAppHeader {
+    display: none;
+}
+
+/* Masquer la barre latérale de navigation Streamlit */
+.stSidebarNav {
+    display: none !important;
+}
+
+/* Pied de page */
+.footer {
+    margin-top: 10%;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}
+
+
+/* ===========================
+   Suppression des marges internes 
+   du conteneur principal Streamlit 
+=========================== */
+.css-1d3f8gv {
+    padding-top: 0rem;    /* Plus d’espace en haut */
+    padding-bottom: 0rem; /* Plus d’espace en bas */
+}
+
+/* Carrousel générique (utilisé pour des images ou bannières) */
+.carousel-container {
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Ombre autour du carrousel */
+}
+
+.carousel-slide {
+    display: none; /* Masqué par défaut jusqu'à activation par script */
+    width: 100%;
+    height: auto;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: auto;
+    display: block; /* Supprime les espaces blancs sous l'image */
+    border-radius: 12px;
+}
+
+/* Animation de transition douce entre les slides */
+.fade {
+    animation-name: fade;
+    animation-duration: 1.0s;
+}
+@keyframes fade {
+    from { opacity: 0.4; }
+    to { opacity: 1; }
+}
+
+/* Petits points en bas du carrousel (indicateurs de slide) */
+.carousel-dots {
+    text-align: center;
+    padding: 10px;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    z-index: 1;
+}
+
+.dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 5px;
+    background-color: #f3f3f3; /* gris clair par défaut */
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+    background-color: #717171; /* gris foncé actif ou au survol */
+}
+
+/* Carrousel spécifique Moviestar (ex : page d’accueil) */
+.moviestar-carousel-container {
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+.moviestar-carousel-slide {
+    display: flex; /* Affiche les slides horizontalement */
+    width: 100%;
+    height: auto;
+    justify-content: center;  /* Centre le contenu horizontalement */
+    align-items: center;      /* Centre le contenu verticalement */
+}
+
+.moviestar-carousel-slide img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+}
+
+/* Indicateurs spécifiques au carrousel Moviestar */
+.moviestar-carousel-dots {
+    text-align: center;
+    padding: 10px;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    z-index: 1;
+}
+
+.moviestar-dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 5px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.moviestar-active, .moviestar-dot:hover {
+    background-color: #b02929; /* rouge foncé au survol ou actif */
+}
+
+
+/* Effet de zoom léger au survol des images */
+img:hover {
+    transform: scale(1.03);
+    transition: 0.3s ease;
+}
+
+/* Style général des boutons Streamlit */
+button {
+    background-color: rgba(255, 255, 255, 0.1); /* Blanc très transparent */
+    color: #ffffff; /* Texte blanc */
+    padding: 8px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Optionnel : bordure subtile blanche */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Survol des boutons */
+button:hover {
+    background-color: rgba(28, 249, 7, 0.626); /* Plus opaque au survol */
+    transform: scale(1.02); /* Léger zoom */
+}
+/* Lien sans soulignement + effet de zoom sur image à l'intérieur */
+a {
+    text-decoration: none;
+}
+a:hover img {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+/* Style personnalisé pour les boutons de pagination */
+div.stButton > button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #333; /* Fond gris foncé */
+    color: white;           /* Texte blanc */
+    border: none;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+div.stButton > button:hover {
+    background-color: #444; /* Légère différence au survol */
+    transform: scale(1.02);
+}

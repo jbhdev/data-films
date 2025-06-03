@@ -1,0 +1,179 @@
+/* =======================================
+   STYLES GÉNÉRAUX DE L'APPLICATION
+======================================= */
+
+/* Style des liens (sans soulignement) */
+a {
+    text-decoration: none;
+}
+
+/* Agrandit les images lorsqu'on survole un lien */
+a:hover img,
+img:hover {
+    transform: scale(1.05); /* effet zoom */
+    transition: transform 0.3s ease;
+}
+
+/* Pied de page centré et discret */
+.footer {
+    margin-top: 50px;
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+}
+
+/* =======================================
+   PAGINATION (boutons numérotés)
+======================================= */
+
+/* Conteneur centré pour les boutons de page */
+.pagination-wrapper {
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* Style commun aux boutons de pagination */
+.page-btn{
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 20px; /* bords arrondis */
+    padding: 6px 12px;
+    margin: 0 5px;
+    font-size: 16px;    
+    font-weight: 500;
+    border: none;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* légère ombre */
+    transition: background-color 0.2s ease;
+}
+
+/* Bouton pagination actif (page actuelle) */
+.page-btn-active {
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(66, 133, 244, 0.4); /* ombre bleutée */
+    cursor: default; /* curseur classique pour indiquer que c'est désactivé */
+}
+
+/* =======================================
+   EN-TÊTE DE LA PAGE FILM (titre + image)
+======================================= */
+
+/* Conteneur principal de l’en-tête */
+.movie-header {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+    align-items: flex-start;
+}
+
+/* Image du film avec coins arrondis et ombre */
+.movie-header img {
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Titre du film */
+.movie-details h1 {
+    margin-top: 0;
+    font-size: 3em;
+    color: #fff;
+}
+
+/* Description du film */
+.movie-details p {
+    font-size: 1.1em;
+    color: #ccc; /* gris clair */
+    line-height: 1.6;
+    text-align: justify; /* justifier le texte */
+    
+}
+
+/* =======================================
+   BOUTONS D'ACTIONS (ex : "Ajouter", etc.)
+======================================= */
+
+/* Conteneur horizontal des boutons */
+.movie-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Style de chaque bouton d'action */
+.movie-actions button {
+    background-color: #663399; /* violet foncé */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Effet au survol des boutons */
+.movie-actions button:hover {
+    background-color: #864bdc; /* violet clair */
+    transform: scale(1.05); /* léger zoom */
+}
+
+/* =======================================
+   SUGGESTIONS DE FILMS SIMILAIRES
+======================================= */
+
+/* Grille responsive pour suggestions */
+.suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    justify-items: center;
+    margin-top: 30px;
+}
+
+/* Conteneur individuel d’un film suggéré */
+.suggestion-item {
+    text-align: center;
+}
+
+/* Image du film suggéré */
+.suggestion-item img {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Titre du film suggéré */
+.suggestion-item p {
+    font-size: 13px;
+    color: #ccc;
+    margin-top: 8px;
+}
+/* Style personnalisé pour les boutons de pagination */
+div.stButton > button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #5e3232; /* Fond gris foncé */
+    color: white;           /* Texte blanc */
+    border: none;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+div.stButton > button:hover {
+    background-color: #444; /* Légère différence au survol */
+    transform: scale(1.02);
+}
+
+.block-container {
+    padding-left: 70px !important;
+    padding-right: 70px !important;
+    max-width: 95vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+

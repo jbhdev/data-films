@@ -1,0 +1,60 @@
+/* Style for Streamlit buttons in the sidebar to look like navigation links */
+.stSidebar .stButton>button {
+    background: none !important;
+    border: none !important;
+    color: #999 !important; /* Default link color */
+    font-size: 18px !important;
+    cursor: pointer !important;
+    padding: 10px 0 !important; /* Vertical padding for sidebar buttons */
+    margin: 5px 0 !important; /* Space between links */
+    transition: color 0.2s !important;
+    width: 100% !important; /* Make buttons take full sidebar width */
+    text-align: left !important; /* Align text to the left */
+}
+.stSidebar .stButton>button:hover {
+    color: #fff !important; /* Hover color */
+    background: none !important; /* Ensure no background on hover */
+}
+.stSidebar .stButton>button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Style for the sidebar itself */
+.stSidebar {
+    background-color: #1a1a1a; /* Darker background for the sidebar */
+    padding-top: 20px;
+}
+
+/* Profile container in sidebar */
+.sidebar-profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #333; /* Separator above profile */
+}
+.sidebar-profile-name {
+    color: #fff;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+/* Login Button in sidebar */
+.login-button-container {
+    margin-top: 30px;
+    text-align: center;
+}
+.login-button-container .stButton>button {
+    background-color: #007bff !important;
+    color: white !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+    font-size: 16px !important;
+    width: auto !important; /* Allow button to size based on content */
+    text-align: center !important;
+}
+.login-button-container .stButton>button:hover {
+    background-color: #0056b3 !important;
+}

@@ -1,0 +1,48 @@
+/* Styles spécifiques à la page de recherche */
+.stApp {
+    background-color: #111; /* Un fond légèrement différent pour la page de recherche */
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+}
+
+.css-1d3f8gv { /* Classe pour le conteneur principal de Streamlit */
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+}
+
+.search-input-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.search-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    justify-items: center;
+}
+
+.search-result-item {
+    text-align: center;
+}
+
+.search-result-item img {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.search-result-item p {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.search-result-item h4 {
+    margin-bottom: 5px;
+    color: #fff;
+}
+
+.stAppHeader {
+    display: none;
+}
