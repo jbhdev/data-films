@@ -46,7 +46,7 @@ def main():
             st.session_state.current_page = 'search'
             st.query_params.clear()
         if st.button("MA LISTE", key="nav_ma_liste_sidebar"):
-            st.session_state.current_page = 'home'
+            st.session_state.current_page = 'favoris' # <-- ce nom représente la page Ma Liste
             st.info("La page 'MA LISTE' n'est pas encore implémentée.")
         if st.button("FILMS", key="nav_films_sidebar"):
             st.session_state.current_page = 'movie'

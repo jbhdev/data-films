@@ -1,41 +1,65 @@
-/* Style des boutons de pagination actifs */
-.stButton>button.page-btn-active {
-    background-color: #4285f4;
+/* =======================================
+   STYLES GÉNÉRAUX DE L'APPLICATION
+======================================= */
+
+/* Style des liens (sans soulignement) */
+a {
+    text-decoration: none;
+}
+
+/* Agrandit les images lorsqu'on survole un lien */
+a:hover img,
+img:hover {
+    transform: scale(1.05); /* effet zoom */
+    transition: transform 0.3s ease;
+}
+
+/* Pied de page centré et discret */
+.footer {
+    margin-top: 50px;
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+}
+
+/* =======================================
+   PAGINATION (boutons numérotés)
+======================================= */
+
+/* Conteneur centré pour les boutons de page */
+.pagination-wrapper {
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* Style commun aux boutons de pagination */
+.page-btn{
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 20px; /* bords arrondis */
+    padding: 6px 12px;
+    margin: 0 5px;
+    font-size: 16px;    
+    font-weight: 500;
+    border: none;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* légère ombre */
+    transition: background-color 0.2s ease;
+}
+
+/* Bouton pagination actif (page actuelle) */
+.page-btn-active {
     color: white;
-    border-radius: 20px;
-    padding: 6px 12px;
     font-weight: bold;
-    border: none;
-    margin: 0 3px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 6px rgba(66, 133, 244, 0.4); /* ombre bleutée */
+    cursor: default; /* curseur classique pour indiquer que c'est désactivé */
 }
 
-.stButton>button.page-btn {
-    background-color: #f1f3f4;
-    color: #202124;
-    border-radius: 20px;
-    padding: 6px 12px;
-    margin: 0 3px;
-    border: none;
-    transition: background-color 0.2s;
-}
+/* =======================================
+   EN-TÊTE DE LA PAGE FILM (titre + image)
+======================================= */
 
-.stButton>button.page-btn:hover {
-    background-color: #e0e0e0;
-}
-
-/* Styles spécifiques à la page de détails du film */
-.stApp {
-    background-color: #0a0a0a; /* Un fond encore plus sombre pour la page de film */
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-}
-
-.css-1d3f8gv { /* Classe pour le conteneur principal de Streamlit */
-    padding-top: 0rem;
-    padding-bottom: 0rem;
-}
-
+/* Conteneur principal de l’en-tête */
 .movie-header {
     display: flex;
     gap: 30px;
@@ -43,106 +67,42 @@
     align-items: flex-start;
 }
 
+/* Image du film avec coins arrondis et ombre */
 .movie-header img {
-    border-radius: 12px;
+    border-radius: 15px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
+/* Titre du film */
 .movie-details h1 {
     margin-top: 0;
     font-size: 3em;
     color: #fff;
 }
 
+/* Description du film */
 .movie-details p {
     font-size: 1.1em;
-    color: #ccc;
+    color: #ccc; /* gris clair */
     line-height: 1.6;
+    text-align: justify; /* justifier le texte */
+    
 }
 
-.movie-actions button {
-    background-color: #007bff;
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1.1em;
-    margin-right: 15px;
-    transition: background-color 0.3s ease;
-}
+/* =======================================
+   BOUTONS D'ACTIONS (ex : "Ajouter", etc.)
+======================================= */
 
-.movie-actions button:hover {
-    background-color: #0056b3;
-}
-
-.suggestions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 20px;
-    justify-items: center;
-    margin-top: 30px;
-}
-
-.suggestion-item {
-    text-align: center;
-}
-
-.suggestion-item img {
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.suggestion-item p {
-    font-size: 13px;
-    color: #ccc;
-    margin-top: 8px;
-}
-.stAppHeader {
-    display: none;
-}
-
-.footer {
-    margin-top: 20%;
-    text-align: center;
-    color: #999;
-    font-size: 14px;
-}
-
-
-/* ------------------------------------------------------------------------------------------------ */
-img:hover {
-    transform: scale(1.03);
-    transition: 0.3s ease;
-}
-
-button {
-    background-color: #663399;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #512b8b;
-}
-
-.footer {
-    text-align: center;
-    margin-top: 50px;
-    color: #aaa;
-}
-
+/* Conteneur horizontal des boutons */
 .movie-actions {
     display: flex;
     gap: 15px;
     margin-top: 20px;
 }
 
+/* Style de chaque bouton d'action */
 .movie-actions button {
-    background-color: #663399;
+    background-color: #663399; /* violet foncé */
     color: white;
     padding: 12px 20px;
     border: none;
@@ -153,100 +113,67 @@ button:hover {
     transition: all 0.3s ease;
 }
 
+/* Effet au survol des boutons */
 .movie-actions button:hover {
-    background-color: #864bdc;
-    transform: scale(1.05);
+    background-color: #864bdc; /* violet clair */
+    transform: scale(1.05); /* léger zoom */
 }
 
-.stAppHeader {
-    display: none;
-}
-a {
-    text-decoration: none;
-}
-a:hover img {
-    transform: scale(1.05);
-    transition: transform 0.3s ease;
-}
+/* =======================================
+   SUGGESTIONS DE FILMS SIMILAIRES
+======================================= */
 
-.pagination-wrapper {
-    text-align: center;
+/* Grille responsive pour suggestions */
+.suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    justify-items: center;
     margin-top: 30px;
 }
 
-.page-btn {
-    background-color: transparent;
-    color: #4285f4;
-    font-size: 18px;
-    font-weight: 500;
-    border: none;
-    margin: 4px;
-    padding: 6px 12px;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.page-btn:hover {
-    background-color: rgba(66, 133, 244, 0.1);
-}
-
-.page-btn-active {
-    color: black;
-    background-color: #e8f0fe;
-    font-weight: bold;
-    cursor: default;
-}
-
-.page-btn-active:hover {
-    background-color: #e8f0fe;
-}
-.page-btn {
-    background-color: #f1f3f4;
-    color: #202124;
-    border-radius: 20px;
-    padding: 6px 12px;
-    margin: 0 5px;
-    font-weight: 500;
-    font-size: 16px;
-    border: none;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.page-btn-active {
-    background-color: #4285f4;
-    color: white;
-    border-radius: 20px;
-    padding: 6px 12px;
-    margin: 0 5px;
-    font-weight: bold;
-    font-size: 16px;
-    border: none;
-    box-shadow: 0 2px 6px rgba(66, 133, 244, 0.4);
-}
-.page-btn, .page-btn-active {
-    display: inline-block;
-    cursor: pointer;
-    border-radius: 20px;
-    padding: 6px 12px;
-    margin: 0;
-    font-size: 16px;
-    font-weight: 500;
-    border: none;
+/* Conteneur individuel d’un film suggéré */
+.suggestion-item {
     text-align: center;
 }
 
-.page-btn {
-    background-color: #f1f3f4;
-    color: #202124;
+/* Image du film suggéré */
+.suggestion-item img {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.page-btn:hover {
-    background-color: #e0e0e0;
+/* Titre du film suggéré */
+.suggestion-item p {
+    font-size: 13px;
+    color: #ccc;
+    margin-top: 8px;
+}
+/* Style personnalisé pour les boutons de pagination */
+div.stButton > button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #5e3232; /* Fond gris foncé */
+    color: white;           /* Texte blanc */
+    border: none;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.page-btn-active {
-    background-color: #4285f4;
-    color: white;
+div.stButton > button:hover {
+    background-color: #444; /* Légère différence au survol */
+    transform: scale(1.02);
 }
+
+.block-container {
+    padding-left: 70px !important;
+    padding-right: 70px !important;
+    max-width: 95vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
