@@ -255,9 +255,10 @@ def show_movie_details(title):
                 unsafe_allow_html=True
             )
 
-    # Bloc réalisateur sous les acteurs
+    ### --------- Bloc réalisateur sous les acteurs---------
     st.markdown("<h2 style='color: #fff; margin-top: 40px;'>Réalisateur</h2>", unsafe_allow_html=True)
-
+    
+    # Récupération du poster du réalisateur depuis les données du film
     realisateur_nom = movie.get('realisateurs', 'Inconnu')
     realisateur_poster = movie.get('directors_1_posters', '')  # À adapter si on a une url ou un chemin d'image pour le réalisateur
     
