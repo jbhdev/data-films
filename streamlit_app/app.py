@@ -60,6 +60,8 @@ def main():
         search_page()
     elif st.session_state.current_page == 'movie':
         movie_detail_page()  # la page qui liste les films (posters cliquables)
+    elif st.session_state.current_page == 'my_list':
+        my_list_page()
     else:
         home_page()
 
