@@ -34,3 +34,10 @@ Bienvenue dans **Movie Recommender App**, une application web de recommandation 
    ```bash
    git clone https://github.com/jbhdev/data-films.git
    
+## Données compressées
+Ces fichiers .pkl.gz sont utilisés pour le système de recommandation :
+- `processed_films_compressed.pkl.gz` : Données transformées pour KNN.
+- `nn_model_compressed.pkl.gz` : Modèle KNN entraîné.
+- `nn_distances_compressed.pkl.gz` : Distances et indices pré-calculés.
+
+⚠️ Ces fichiers ont été compressés pour rester en dessous de 100 Mo.
