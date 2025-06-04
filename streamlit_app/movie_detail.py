@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd 
 import ast
 from utils.css_loader import load_css
 import string
@@ -132,9 +133,6 @@ def show_movie_details(title):
     if "show_trailer" not in st.session_state:
         st.session_state.show_trailer = False
 
-    vote_average = movie.get('vote_average', 0)
-    stars = "★" * int(round(float(vote_average) / 2)) + "☆" * (5 - int(round(float(vote_average) / 2)))
-
     # Structure principale : affiche + détails côte à côte
     cols = st.columns([1, 2])
 
@@ -261,11 +259,15 @@ def show_movie_details(title):
     st.markdown("<h2 style='color: #fff; margin-top: 40px;'>Réalisateur</h2>", unsafe_allow_html=True)
 
     realisateur_nom = movie.get('realisateurs', 'Inconnu')
-    realisateur_poster = movie.get('directors_1_posters', '')  # À adapter si tu as une URL / chemin d'image pour le réalisateur
-    if realisateur_poster and not realisateur_poster.startswith("http"):
-        realisateur_poster = base_url + realisateur_poster
-    elif not realisateur_poster:
+    realisateur_poster = movie.get('directors_1_posters', '')  # À adapter si on a une url ou un chemin d'image pour le réalisateur
+    
+    # Gestion robuste de l'URL du poster
+    if pd.isna(realisateur_poster) or realisateur_poster == '':
         realisateur_poster = "https://placehold.co/150x225?text=No+Image"
+    else:
+        realisateur_poster = str(realisateur_poster)
+        if not realisateur_poster.startswith("https://"):
+            realisateur_poster = base_url + realisateur_poster
 
     col_real = st.columns(1)
     with col_real[0]:
