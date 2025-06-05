@@ -15,21 +15,14 @@ from recommendation import (
 def movie_detail_page():
 
     load_css("movie_style.css")
-    load_css("sidebar_style.css")
     st.markdown("<h1 style='color: #fff;'>Recherche</h1>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
 
-    # --- LETTRES ALPHABÉTIQUES ---
-    all_letters = list(string.ascii_uppercase) + ['#']
-
-
-
     # Barre de recherche
-    search_query = st.text_input("Rechercher un film par titre", value="",placeholder="Titre", label_visibility="collapsed")
+    search_query = st.text_input("Rechercher un film par titre", value="",placeholder="Titre, Genre, Acteurs", label_visibility="collapsed")
 
     filtered_movies = films[["original_title", "poster_url"]].dropna(subset=["original_title"])
-
 
     if search_query.strip() == "":
         # Aucune recherche : affichage aléatoire de 20 films
@@ -41,9 +34,7 @@ def movie_detail_page():
 
     # Affichage 5 colonnes
     cols = st.columns(5)
-
     for i, (_, row) in enumerate(sampled_movies.iterrows()):
-
         with cols[i % 5]:
             st.markdown(
                 f"""
@@ -51,7 +42,7 @@ def movie_detail_page():
                     <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none; width: 100%;">
                         <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}"
                             style="width: 100%; height: 270px; object-fit: cover; border-radius: 10px;">
-                        <div style='height: 50px; color: white; font-weight: bold; text-align: center;
+                        <div style='height: 50px; color: white; font-weight: bold; text-align: center; 
                                     display: flex; align-items: center; justify-content: center; padding: 0 5px; overflow: hidden;'>
                             {row['original_title']}
                         </div>
@@ -60,7 +51,6 @@ def movie_detail_page():
                 """,
                 unsafe_allow_html=True
             )
-
 
     # Auto-refresh toutes les 20 secondes
     if "last_refresh" not in st.session_state:
@@ -78,7 +68,6 @@ def show_movie_details(title):
         st.rerun()
 
     load_css("movie_style.css")
-    load_css("sidebar_style.css")
 
     movie_data = films[films["original_title"] == title]
     if movie_data.empty:
@@ -136,7 +125,7 @@ def show_movie_details(title):
                 <p style="color:white; margin-top: 0;text-align: justify;">{movie.get('overview', 'Pas de description disponible.')}</p>
                 <p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">Notes :</p>
                 <p style="color:{note_color}; font-size: 24px; font-weight: bold; margin: 0;">
-                {vote_average:.2f} / 10
+                {vote_average:.2f} / 10 
                 </p>
                 <p style="font-size: 28px; color: {note_color}; margin: 5px 0 0 0;">
                     {stars}</p>
@@ -165,8 +154,8 @@ def show_movie_details(title):
             st.markdown(
                 f"""
                 <div style="position: relative; padding-bottom: 56.25%; height: 0; margin-top: 20px;">
-                    <iframe src="https://www.youtube.com/embed/{youtube_id}"
-                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                    <iframe src="https://www.youtube.com/embed/{youtube_id}" 
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
                             frameborder="0" allowfullscreen>
                     </iframe>
                 </div>
@@ -207,7 +196,6 @@ def show_movie_details(title):
                 f"""
                 <div style='text-align: center;'>
                     <a href="?actor={acteur['nom']}" target="_self" style="text-decoration: none; color: inherit;">
-
                         <img src="{poster_url}" 
                             style="
                                 width: 300px;
@@ -250,7 +238,7 @@ def show_movie_details(title):
         st.markdown(
             f"""
             <div style='text-align: center; margin-bottom: 40px;'>
-                    <img src="{realisateur_poster}"
+                    <img src="{realisateur_poster}" 
                         style="
                             width: 300px;
                             height: 300px;
@@ -259,7 +247,6 @@ def show_movie_details(title):
                             border: 1px solid white;
                             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
                         ">
-
                     <a href="?director={realisateur_nom}" target="_self" style="text-decoration: none; color: white;">
                     <p style='font-weight: bold; margin-top: 8px;font-size: 18px;'>{realisateur_nom}</p>
                     </a>            
@@ -309,7 +296,6 @@ def show_movie_details(title):
                     """,
                     unsafe_allow_html=True
                 )
-
     else: 
         st.info("Aucune recommandation basée sur les acteurs.")
 
@@ -393,4 +379,3 @@ def show_director_page(director_name):
         st.session_state.current_page = 'movie'
         st.query_params.clear()
         st.rerun()
-

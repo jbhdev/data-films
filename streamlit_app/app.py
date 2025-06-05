@@ -53,15 +53,13 @@ def main():
         if st.button("ACCUEIL", key="nav_accueil_sidebar"):
             st.session_state.current_page = 'home'
             st.query_params.clear()
-        if st.button("RECHERCHE", key="nav_recherche_sidebar"):
-            st.session_state.current_page = 'search'
+        if st.button("RECHERCHE", key="nav_films_sidebar"):
+            st.session_state.current_page = 'movie'
             st.query_params.clear()
         if st.button("MA LISTE", key="nav_ma_liste_sidebar"):
             st.session_state.current_page = 'my_list' # <--- CHANGE THIS TO 'my_list'
             st.query_params.clear()
-        if st.button("FILMS", key="nav_films_sidebar"):
-            st.session_state.current_page = 'movie'
-            st.query_params.clear()
+        
 
         
 
