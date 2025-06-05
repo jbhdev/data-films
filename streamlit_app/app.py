@@ -1,11 +1,13 @@
 import streamlit as st
 import os
+from dotenv import load_dotenv
 from home import home_page
 from search import search_page
 from mylist import my_list_page
 from movie_detail import movie_detail_page, show_movie_details
 from utils.css_loader import load_css
-
+# Charger les variables d'environnement
+load_dotenv()
 st.set_page_config(
         page_title="Moviestar App",
         layout="wide",

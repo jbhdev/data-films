@@ -228,13 +228,14 @@ def show_movie_details(title):
 
     acteur_cols = st.columns(len(acteurs))
     for i, acteur in enumerate(acteurs):
-        poster_path = acteur['poster'].strip() if acteur['poster'] else ''
-        if poster_path and not poster_path.startswith("http"):
-            poster_url = base_url + poster_path
-        else:
-            poster_url = poster_path or 'https://placehold.co/150x225?text=No+Image'
-
         with acteur_cols[i]:
+            poster = acteur['poster']
+            poster_path = poster.strip() if isinstance(poster, str) and not pd.isna(poster) else ''
+            if poster_path and not poster_path.startswith("http"):
+                poster_url = base_url + poster_path
+            else:
+                poster_url = poster_path or 'https://placehold.co/150x225?text=No+Image'
+
             st.markdown(
                 f"""
                 <div style='text-align: center;'>

@@ -33,7 +33,7 @@ def my_list_page():
             if 'my_movies' not in st.session_state:
                 st.session_state.my_movies = []
             st.session_state.my_movies.append(new_movie_title)
-            st.success(f"'{new_movie_title}' a été ajouté à votre liste !")
+            st.success(f"✅ Le film **{new_movie_title}** a été ajouté à votre liste.")
             st.experimental_rerun() # Rerun to update the displayed list
         else:
             st.warning("Veuillez entrer un titre de film.")
