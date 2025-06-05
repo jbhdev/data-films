@@ -20,7 +20,7 @@ def movie_detail_page():
 
 
     # Barre de recherche
-    search_query = st.text_input("Rechercher un film par titre", value="",placeholder="Titre, Genre, Acteurs", label_visibility="collapsed")
+    search_query = st.text_input("Rechercher un film par titre", value="",placeholder="Quel est le titre de votre film?", label_visibility="collapsed")
 
     filtered_movies = films[["original_title", "poster_url"]].dropna(subset=["original_title"])
 

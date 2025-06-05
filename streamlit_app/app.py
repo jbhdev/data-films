@@ -34,16 +34,8 @@ def main():
     actor_param = query_params.get("actor") 
     director_param = query_params.get("director")
 
-    # Vérifie si un film est sélectionné dans l'URL
-    if movie_param:
-        show_movie_details(movie_param)
-        return
-    elif actor_param: 
-        show_actor_page(actor_param)
-        return
-    elif director_param:
-        show_director_page(director_param)
-        return    
+   
+           
 
     # --- Sidebar ---
     with st.sidebar:
