@@ -70,10 +70,10 @@ def home_page():
                 unsafe_allow_html=True
             )
             
-            if st.button(f"Voir le film", key=f"home_btn_{movie['original_title']}"):
-                st.session_state.selected_movie = movie 
-                st.session_state.current_page = "movie_detail"
-                st.rerun()  # Force la redirection
+            #if st.button(f"Voir le film", key=f"home_btn_{movie['original_title']}"):
+                #st.session_state.selected_movie = movie 
+                #st.session_state.current_page = "movie_detail"
+                #st.rerun()  # Force la redirection
 
     # ------ AJOUT : Films à venir ------
     st.markdown("<h2 style='color: #fff;'>À venir prochainement</h2>", unsafe_allow_html=True)

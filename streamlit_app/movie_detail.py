@@ -12,14 +12,12 @@ from recommendation import (
 
 def movie_detail_page():
     load_css("movie_style.css")
-    st.markdown("<h1 style='text-align: center; color: #fff;'>Tous les films</h1>", unsafe_allow_html=True)
+    load_css("sidebar_style.css")
+    st.markdown("<h1 style='color: #fff;'>Recherche</h1>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
     # --- LETTRES ALPHABÉTIQUES ---
     all_letters = list(string.ascii_uppercase) + ['#']
-    st.markdown(""" <style>div[class*="stRadio"] > label {font-size: 100px !important;padding: 50px 100px;
-    }div[class*="stRadio"] > div {gap: 20px;} </style>
-                """, unsafe_allow_html=True)
 
     selected_letter = st.radio("Filtrer par lettre", all_letters,label_visibility="hidden", horizontal=True)
 
@@ -35,7 +33,7 @@ def movie_detail_page():
     sorted_movies = filtered_movies.sort_values("original_title")
 
     # --- SEARCH BAR ---
-    search_query = st.text_input("Rechercher un film", "").lower()
+    search_query = st.text_input("Rechercher un titre", placeholder="Titre , personnage ou genre", label_visibility="collapsed")
 
     if search_query:
         # Filter movies based on search query
@@ -53,7 +51,7 @@ def movie_detail_page():
             st.markdown(
                 f"""
                 <div style='display: flex; flex-direction: column; align-items: center; height: 340px; margin-bottom: 10px;'>
-                    <a href="?movie={row['original_title']}" style="text-decoration: none; width: 100%;">
+                    <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none; width: 100%;">
                         <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}"
                             style="width: 100%; height: 270px; object-fit: cover; border-radius: 10px;">
                         <div style='height: 50px; color: white; font-weight: bold; text-align: center;
@@ -69,6 +67,7 @@ def movie_detail_page():
 
 def show_movie_details(title):
     load_css("movie_style.css")
+    load_css("sidebar_style.css")
 
     movie_data = films[films["original_title"] == title]
     if movie_data.empty:
@@ -189,7 +188,7 @@ def show_movie_details(title):
             st.markdown(
                 f"""
                 <div style='text-align: center;'>
-                    <a href="?actor={acteur['nom']}" style="text-decoration: none; color: inherit;">
+                    <a href="?actor={acteur['nom']}" target="_self" style="text-decoration: none; color: inherit;">
                         <img src="{poster_url}"
                             style="
                                 width: 300px;
@@ -256,7 +255,7 @@ def show_movie_details(title):
             with cols[i]:
                 st.markdown(
                     f"""
-                    <a href="?movie={row['original_title']}" style="text-decoration: none;">
+                    <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none;">
                         <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}" style="width:100%; border-radius: 10px;">
                         <p style='color: white; font-weight: bold; font-size: 18px; text-align: center;'>{row['original_title']}</p>
                     </a>
@@ -275,7 +274,7 @@ def show_movie_details(title):
             with cols[i]:
                 st.markdown(
                     f"""
-                    <a href="?movie={row['original_title']}" style="text-decoration: none;">
+                    <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none;">
                         <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}" style="width:100%; border-radius: 10px;">
                         <p style='color: white; font-weight: bold; font-size: 18px; text-align: center;'>{row['original_title']}</p>
                     </a>
