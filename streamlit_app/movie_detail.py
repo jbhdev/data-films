@@ -248,12 +248,11 @@ def show_movie_details(title):
     # Affichage dans des colonnes
     acteur_cols = st.columns(len(acteurs))
     for i, acteur in enumerate(acteurs):
-<<<<<<< HEAD
-=======
+
         poster_url = get_clean_url(acteur['poster'], base_url)
 
->>>>>>> a64c5f06b893cc9ad73955a212b05add37340fb5
-        with acteur_cols[i]:
+
+    with acteur_cols[i]:
             poster = acteur['poster']
             poster_path = poster.strip() if isinstance(poster, str) and not pd.isna(poster) else ''
             if poster_path and not poster_path.startswith("http"):
