@@ -58,7 +58,7 @@ def movie_detail_page():
             st.markdown(
                 f"""
                 <div style='display: flex; flex-direction: column; align-items: center; height: 340px; margin-bottom: 10px;'>
-                    <a href="?movie={row['original_title']}" style="text-decoration: none; width: 100%;">
+                    <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none; width: 100%;">
                         <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}"
                             style="width: 100%; height: 270px; object-fit: cover; border-radius: 10px;">
                         <div style='height: 50px; color: white; font-weight: bold; text-align: center; 
@@ -254,7 +254,7 @@ def show_movie_details(title):
             st.markdown(
                 f"""
                 <div style='text-align: center;'>
-                    <a href="?actor={acteur['nom']}" style="text-decoration: none; color: inherit;">
+                    <a href="?actor={acteur['nom']}" target="_self" style="text-decoration: none; color: inherit;">
                         <img src="{poster_url}" 
                             style="
                                 width: 300px;
@@ -306,7 +306,7 @@ def show_movie_details(title):
                             border: 1px solid white;
                             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
                         ">
-                    <a href="?director={realisateur_nom}" style="text-decoration: none; color: white;">
+                    <a href="?director={realisateur_nom}" target="_self" style="text-decoration: none; color: white;">
                     <p style='font-weight: bold; margin-top: 8px;font-size: 18px;'>{realisateur_nom}</p>
                     </a>            
             </div>
@@ -329,7 +329,7 @@ def show_movie_details(title):
             with cols[i]:
                 st.markdown(
                     f"""
-                    <a href="?movie={row['original_title']}" style="text-decoration: none;">
+                    <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none;">
                         <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}" style="width:100%; border-radius: 10px;">
                         <p style='color: white; font-weight: bold; font-size: 18px; text-align: center;'>{row['original_title']}</p>
                     </a>
@@ -348,7 +348,7 @@ def show_movie_details(title):
             with cols[i]:
                 st.markdown(
                     f"""
-                    <a href="?movie={row['original_title']}" style="text-decoration: none;">
+                    <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none;">
                         <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}" style="width:100%; border-radius: 10px;">
                         <p style='color: white; font-weight: bold; font-size: 18px; text-align: center;'>{row['original_title']}</p>
                     </a>
@@ -377,7 +377,7 @@ def show_actor_page(actor_name):
             st.markdown(
                 f"""
                 <div style='display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;'>
-                    <a href="?movie={row['original_title']}" style="text-decoration: none; color: inherit;">
+                    <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none; color: inherit;">
                         <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}"
                             style="width: 100%; height: 270px; object-fit: cover; border-radius: 10px;">
                         <div style='color: white; font-weight: bold; text-align: center; margin-top: 8px;'>{row['original_title']}</div>
@@ -422,7 +422,7 @@ def show_director_page(director_name):
         with cols[i % 5]:
             st.markdown(
                 f"""
-                <a href="?movie={row['original_title']}" style="text-decoration: none;">
+                <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none;">
                     <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}" 
                          style="width:100%; height: 270px; object-fit: cover; border-radius: 10px;">
                     <p style='color: white; font-weight: bold; font-size: 16px; text-align: center;'>
