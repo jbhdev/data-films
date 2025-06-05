@@ -34,22 +34,10 @@ def main():
     actor_param = query_params.get("actor") 
     director_param = query_params.get("director")
 
-    # Vérifie si un film est sélectionné dans l'URL
-    if movie_param:
-        show_movie_details(movie_param)
-        return
-    elif actor_param: 
-        show_actor_page(actor_param)
-        return
-    elif director_param:
-        show_director_page(director_param)
-        return    
-
     # --- Sidebar ---
     with st.sidebar:
         st.image("assets/moviestar.png")
         st.markdown("<br>", unsafe_allow_html=True)
-
         if st.button("ACCUEIL", key="nav_accueil_sidebar"):
             st.session_state.current_page = 'home'
             st.query_params.clear()
@@ -60,11 +48,7 @@ def main():
             st.session_state.current_page = 'my_list' # <--- CHANGE THIS TO 'my_list'
             st.query_params.clear()
         
-
-        
-
     # --- Main content ---
-    
     if movie_param:
         show_movie_details(movie_param)
     elif actor_param: 
