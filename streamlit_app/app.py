@@ -64,14 +64,22 @@ def main():
         
 
     # --- Main content ---
-    if st.session_state.current_page == 'search':
-        search_page()
-    elif st.session_state.current_page == 'movie':
-        movie_detail_page()  # la page qui liste les films (posters cliquables)
-    elif st.session_state.current_page == 'my_list':
-        my_list_page() 
-    else:
-        home_page()
+    
+    if movie_param:
+        show_movie_details(movie_param)
+    elif actor_param: 
+        show_actor_page(actor_param)
+    elif director_param:
+        show_director_page(director_param)
+    else:    
+        if st.session_state.current_page == 'search':
+            search_page()
+        elif st.session_state.current_page == 'movie':
+            movie_detail_page()  # la page qui liste les films (posters cliquables)
+        elif st.session_state.current_page == 'my_list':
+            my_list_page() 
+        else:
+            home_page()
 
     # --- Footer ---
     st.markdown(
