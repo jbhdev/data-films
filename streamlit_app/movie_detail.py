@@ -8,9 +8,11 @@ from recommendation import (
     recommend_by_actors,
     films,
     get_film_index_by_title,
+    get_films_by_actor
 )
 
 def movie_detail_page():
+
     load_css("movie_style.css")
     st.markdown("<h1 style='text-align: center; color: #fff;'>Tous les films</h1>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
@@ -117,6 +119,13 @@ def movie_detail_page():
     st.markdown("<hr>", unsafe_allow_html=True)
 
 def show_movie_details(title):
+            # Bouton retour aux films
+    if st.button("⬅ Retour aux films"):
+        # Nettoyer query params et retourner à la liste
+        st.session_state.current_page = 'movie'
+        st.query_params.clear()
+        st.rerun()
+
     load_css("movie_style.css")
 
     movie_data = films[films["original_title"] == title]
@@ -297,7 +306,9 @@ def show_movie_details(title):
                             border: 1px solid white;
                             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
                         ">
-                    <p style='color: white; font-weight: bold; margin-top: 8px;font-size: 18px;'>{realisateur_nom}</p> 
+                    <a href="?director={realisateur_nom}" style="text-decoration: none; color: white;">
+                    <p style='font-weight: bold; margin-top: 8px;font-size: 18px;'>{realisateur_nom}</p>
+                    </a>            
             </div>
             """,
             unsafe_allow_html=True
@@ -347,3 +358,83 @@ def show_movie_details(title):
     else: 
         st.info("Aucune recommandation basée sur les acteurs.")
 
+## ___________________________________________________________________________________________________________________________
+## ----------------------------- Liste de Films par acteurs -----------------------------------------------------------------------------
+## ___________________________________________________________________________________________________________________________
+def show_actor_page(actor_name):
+    st.markdown(f"<h1 style='text-align: center; color: #fff;'>Films avec {actor_name}</h1>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    df = get_films_by_actor(actor_name)
+
+    if df.empty:
+        st.info("Aucun film trouvé pour cet acteur.")
+        return
+
+    cols = st.columns(5)
+    for i, (_, row) in enumerate(df.iterrows()):
+        with cols[i % 5]:
+            st.markdown(
+                f"""
+                <div style='display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;'>
+                    <a href="?movie={row['original_title']}" style="text-decoration: none; color: inherit;">
+                        <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}"
+                            style="width: 100%; height: 270px; object-fit: cover; border-radius: 10px;">
+                        <div style='color: white; font-weight: bold; text-align: center; margin-top: 8px;'>{row['original_title']}</div>
+                        <div style='color: gold; text-align: center;'>⭐ {row['vote_average']:.1f}</div>
+                    </a>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+        # Bouton retour aux films
+    if st.button("⬅ Retour aux films"):
+        # Nettoyer query params et retourner à la liste
+        st.session_state.current_page = 'movie'
+        st.query_params.clear()
+        st.rerun()
+
+## ___________________________________________________________________________________________________________________________
+## ----------------------------- Liste de Films par réalisateurs -----------------------------------------------------------------------------
+## ___________________________________________________________________________________________________________________________
+
+def show_director_page(director_name):
+    load_css("movie_style.css")
+    st.markdown(f"<h1 style='text-align: center; color: #fff;'>Films réalisés par {director_name}</h1>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Fonction de nettoyage du nom
+    def normalize_name(name):
+        return name.strip().lower().replace("é", "e").replace("-", " ").replace("è", "e").replace("ê", "e")
+
+    # Normalisation pour filtrage
+    normalized = normalize_name(director_name)
+    films['realisateurs'] = films['realisateurs'].fillna('').astype(str).apply(normalize_name)
+
+    matched = films[films['realisateurs'] == normalized]
+
+    if matched.empty:
+        st.warning("Aucun film trouvé pour ce réalisateur.")
+        return
+
+    cols = st.columns(5)
+    for i, (_, row) in enumerate(matched.iterrows()):
+        with cols[i % 5]:
+            st.markdown(
+                f"""
+                <a href="?movie={row['original_title']}" style="text-decoration: none;">
+                    <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}" 
+                         style="width:100%; height: 270px; object-fit: cover; border-radius: 10px;">
+                    <p style='color: white; font-weight: bold; font-size: 16px; text-align: center;'>
+                        {row['original_title']}
+                    </p>
+                </a>
+                """,
+                unsafe_allow_html=True
+            )
+
+    st.markdown("<br><hr>", unsafe_allow_html=True)
+    if st.button("⬅ Retour aux films"):
+        st.session_state.current_page = 'movie'
+        st.query_params.clear()
+        st.rerun()
