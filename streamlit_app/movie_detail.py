@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd 
 import ast
+import time
 from utils.css_loader import load_css
 import string
 from recommendation import (
@@ -17,43 +18,23 @@ def movie_detail_page():
     st.markdown("<h1 style='text-align: center; color: #fff;'>Tous les films</h1>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # --- LETTRES ALPHABÉTIQUES ---
-    all_letters = list(string.ascii_uppercase) + ['#']
-    st.markdown(""" <style>div[class*="stRadio"] > label {font-size: 100px !important;padding: 50px 100px;
-    }div[class*="stRadio"] > div {gap: 20px;} </style>
-                """, unsafe_allow_html=True)
 
-    selected_letter = st.radio("Filtrer par lettre", all_letters,label_visibility="hidden", horizontal=True)
-
-    def starts_with_letter(title):
-        if not title or not isinstance(title, str):
-            return False
-        if selected_letter == '#':
-            return not title[0].upper() in string.ascii_uppercase
-        return title.upper().startswith(selected_letter)
+    # Barre de recherche
+    search_query = st.text_input("Rechercher un film par titre", value="",placeholder="Titre", label_visibility="collapsed")
 
     filtered_movies = films[["original_title", "poster_url"]].dropna(subset=["original_title"])
-    filtered_movies = filtered_movies[filtered_movies["original_title"].apply(starts_with_letter)]
-    sorted_movies = filtered_movies.sort_values("original_title")
 
-    films_per_page = 20
-    total_pages = max(1, (len(sorted_movies) - 1) // films_per_page + 1)
+    if search_query.strip() == "":
+        # Aucune recherche : affichage aléatoire de 20 films
+        sampled_movies = filtered_movies.sample(n=min(20, len(filtered_movies)), random_state=None)
+    else:
+        # Filtrer par recherche (contient, insensible à la casse)
+        mask = filtered_movies["original_title"].str.contains(search_query, case=False, na=False)
+        sampled_movies = filtered_movies[mask].sort_values("original_title")
 
-    if "movie_page" not in st.session_state:
-        st.session_state.movie_page = 1
-    if "last_letter" not in st.session_state:
-        st.session_state.last_letter = selected_letter
-
-    if st.session_state.last_letter != selected_letter:
-        st.session_state.movie_page = 1
-        st.session_state.last_letter = selected_letter
-
-    start_idx = (st.session_state.movie_page - 1) * films_per_page
-    end_idx = start_idx + films_per_page
-    page_movies = sorted_movies.iloc[start_idx:end_idx]
-
+    # Affichage 5 colonnes
     cols = st.columns(5)
-    for i, (_, row) in enumerate(page_movies.iterrows()):
+    for i, (_, row) in enumerate(sampled_movies.iterrows()):
         with cols[i % 5]:
             st.markdown(
                 f"""
@@ -71,52 +52,12 @@ def movie_detail_page():
                 unsafe_allow_html=True
             )
 
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown("<div style='text-align: center;'><p style='color: white;'>Pages :</p></div>", unsafe_allow_html=True)
-
-    max_visible = 10
-    current = st.session_state.movie_page
-
-    pages = []
-    num_start_pages = 4
-    num_end_pages = 4
-    range_buffer = 4
-
-    if total_pages <= (num_start_pages + num_end_pages + 2 * range_buffer + 2):
-        pages = list(range(1, total_pages + 1))
-    else:
-        pages.extend(range(1, num_start_pages + 1))
-        if current > num_start_pages + range_buffer + 1:
-            pages.append("...")
-        start = max(current - range_buffer, num_start_pages + 1)
-        end = min(current + range_buffer, total_pages - num_end_pages)
-        pages.extend(i for i in range(start, end + 1) if i not in pages)
-        if current < total_pages - num_end_pages - range_buffer:
-            pages.append("...")
-        pages.extend(range(total_pages - num_end_pages + 1, total_pages + 1))
-
-    pagination_cols = st.columns(len(pages))
-    for idx, p in enumerate(pages):
-        with pagination_cols[idx]:
-            if p == "...":
-                st.markdown("<span style='margin: 8px; color: #red;'>…</span>", unsafe_allow_html=True)
-            else:
-                if p == st.session_state.movie_page:
-                    st.markdown(
-                        f"""
-                        <div style="padding: 8px 16px; background-color: gold; color: black; 
-                                    font-weight: bold; border-radius: 6px; text-align: center;">
-                            {p}
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
-                else:
-                    if st.button(str(p), key=f"page_{p}"):
-                        st.session_state.movie_page = p
-                        st.rerun()
-
-    st.markdown("<hr>", unsafe_allow_html=True)
+    # Auto-refresh toutes les 20 secondes
+    if "last_refresh" not in st.session_state:
+        st.session_state.last_refresh = time.time()
+    if time.time() - st.session_state.last_refresh > 20:
+        st.session_state.last_refresh = time.time()
+        st.rerun()
 
 def show_movie_details(title):
             # Bouton retour aux films
