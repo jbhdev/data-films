@@ -33,24 +33,21 @@ def movie_detail_page():
     filtered_movies = filtered_movies[filtered_movies["original_title"].apply(starts_with_letter)]
     sorted_movies = filtered_movies.sort_values("original_title")
 
-    films_per_page = 20
-    total_pages = max(1, (len(sorted_movies) - 1) // films_per_page + 1)
+    # --- SEARCH BAR ---
+    search_query = st.text_input("Rechercher un film", "").lower()
 
-    if "movie_page" not in st.session_state:
-        st.session_state.movie_page = 1
-    if "last_letter" not in st.session_state:
-        st.session_state.last_letter = selected_letter
+    if search_query:
+        # Filter movies based on search query
+        display_movies = sorted_movies[sorted_movies["original_title"].str.lower().str.contains(search_query)]
+        if display_movies.empty:
+            st.info("Aucun film trouvé pour cette recherche.")
+    else:
+        # If no search query, display all filtered movies for the selected letter
+        display_movies = sorted_movies
 
-    if st.session_state.last_letter != selected_letter:
-        st.session_state.movie_page = 1
-        st.session_state.last_letter = selected_letter
-
-    start_idx = (st.session_state.movie_page - 1) * films_per_page
-    end_idx = start_idx + films_per_page
-    page_movies = sorted_movies.iloc[start_idx:end_idx]
 
     cols = st.columns(5)
-    for i, (_, row) in enumerate(page_movies.iterrows()):
+    for i, (_, row) in enumerate(display_movies.iterrows()):
         with cols[i % 5]:
             st.markdown(
                 f"""
@@ -58,7 +55,7 @@ def movie_detail_page():
                     <a href="?movie={row['original_title']}" style="text-decoration: none; width: 100%;">
                         <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}"
                             style="width: 100%; height: 270px; object-fit: cover; border-radius: 10px;">
-                        <div style='height: 50px; color: white; font-weight: bold; text-align: center; 
+                        <div style='height: 50px; color: white; font-weight: bold; text-align: center;
                                     display: flex; align-items: center; justify-content: center; padding: 0 5px; overflow: hidden;'>
                             {row['original_title']}
                         </div>
@@ -68,52 +65,6 @@ def movie_detail_page():
                 unsafe_allow_html=True
             )
 
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown("<div style='text-align: center;'><p style='color: white;'>Pages :</p></div>", unsafe_allow_html=True)
-
-    max_visible = 10
-    current = st.session_state.movie_page
-
-    pages = []
-    num_start_pages = 4
-    num_end_pages = 4
-    range_buffer = 4
-
-    if total_pages <= (num_start_pages + num_end_pages + 2 * range_buffer + 2):
-        pages = list(range(1, total_pages + 1))
-    else:
-        pages.extend(range(1, num_start_pages + 1))
-        if current > num_start_pages + range_buffer + 1:
-            pages.append("...")
-        start = max(current - range_buffer, num_start_pages + 1)
-        end = min(current + range_buffer, total_pages - num_end_pages)
-        pages.extend(i for i in range(start, end + 1) if i not in pages)
-        if current < total_pages - num_end_pages - range_buffer:
-            pages.append("...")
-        pages.extend(range(total_pages - num_end_pages + 1, total_pages + 1))
-
-    pagination_cols = st.columns(len(pages))
-    for idx, p in enumerate(pages):
-        with pagination_cols[idx]:
-            if p == "...":
-                st.markdown("<span style='margin: 8px; color: #red;'>…</span>", unsafe_allow_html=True)
-            else:
-                if p == st.session_state.movie_page:
-                    st.markdown(
-                        f"""
-                        <div style="padding: 8px 16px; background-color: gold; color: black; 
-                                    font-weight: bold; border-radius: 6px; text-align: center;">
-                            {p}
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
-                else:
-                    if st.button(str(p), key=f"page_{p}"):
-                        st.session_state.movie_page = p
-                        st.rerun()
-
-    st.markdown("<hr>", unsafe_allow_html=True)
 
 def show_movie_details(title):
     load_css("movie_style.css")
@@ -177,7 +128,7 @@ def show_movie_details(title):
                 <p style="color:white; margin-top: 0;text-align: justify;">{movie.get('overview', 'Pas de description disponible.')}</p>
                 <p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">Notes :</p>
                 <p style="color:{note_color}; font-size: 24px; font-weight: bold; margin: 0;">
-                {vote_average:.2f} / 10 
+                {vote_average:.2f} / 10
                 </p>
                 <p style="font-size: 28px; color: {note_color}; margin: 5px 0 0 0;">
                     {stars}</p>
@@ -206,8 +157,8 @@ def show_movie_details(title):
             st.markdown(
                 f"""
                 <div style="position: relative; padding-bottom: 56.25%; height: 0; margin-top: 20px;">
-                    <iframe src="https://www.youtube.com/embed/{youtube_id}" 
-                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
+                    <iframe src="https://www.youtube.com/embed/{youtube_id}"
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
                             frameborder="0" allowfullscreen>
                     </iframe>
                 </div>
@@ -241,7 +192,7 @@ def show_movie_details(title):
                 f"""
                 <div style='text-align: center;'>
                     <a href="?actor={acteur['nom']}" style="text-decoration: none; color: inherit;">
-                        <img src="{poster_url}" 
+                        <img src="{poster_url}"
                             style="
                                 width: 300px;
                                 height: 300px;
@@ -272,7 +223,7 @@ def show_movie_details(title):
         st.markdown(
             f"""
             <div style='text-align: center; margin-bottom: 40px;'>
-                    <img src="{realisateur_poster}" 
+                    <img src="{realisateur_poster}"
                         style="
                             width: 300px;
                             height: 300px;
@@ -281,7 +232,7 @@ def show_movie_details(title):
                             border: 1px solid white;
                             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
                         ">
-                    <p style='color: white; font-weight: bold; margin-top: 8px;font-size: 18px;'>{realisateur_nom}</p> 
+                    <p style='color: white; font-weight: bold; margin-top: 8px;font-size: 18px;'>{realisateur_nom}</p>
             </div>
             """,
             unsafe_allow_html=True
@@ -328,6 +279,5 @@ def show_movie_details(title):
                     """,
                     unsafe_allow_html=True
                 )
-    else: 
+    else:
         st.info("Aucune recommandation basée sur les acteurs.")
-

@@ -1,7 +1,7 @@
 import streamlit as st
 import os
 from home import home_page
-from search import search_page
+from search import search_page 
 from mylist import my_list_page
 from movie_detail import movie_detail_page, show_movie_details
 from utils.css_loader import load_css
@@ -60,6 +60,8 @@ def main():
         search_page()
     elif st.session_state.current_page == 'movie':
         movie_detail_page()  # la page qui liste les films (posters cliquables)
+    elif st.session_state.current_page == 'my_list':
+        my_list_page() 
     else:
         home_page()
 
