@@ -118,3 +118,25 @@ def recommend_similar_items(index: int, n_neighbors: int = 5) -> pd.DataFrame:
     recs = films.iloc[indices[0]].copy()
     recs["distance"] = distances[0]
     return recs
+
+
+def normalize_name(name):
+    return name.strip().lower() \
+        .replace("é", "e").replace("è", "e") \
+        .replace("-", " ").replace("_", " ") \
+        .replace("ê", "e").replace("ô", "o")
+
+def get_films_by_actor(actor_name: str, original_data: pd.DataFrame = films) -> pd.DataFrame:
+    # Normaliser les colonnes d'acteurs
+    for col in ['acteurs_1', 'acteurs_2', 'actrices']:
+        original_data[col] = original_data[col].fillna('').astype(str).apply(normalize_name)
+
+    actor_name_normalized = normalize_name(actor_name)
+
+    filtered = original_data[
+        (original_data['acteurs_1'] == actor_name_normalized) |
+        (original_data['acteurs_2'] == actor_name_normalized) |
+        (original_data['actrices'] == actor_name_normalized)
+    ]
+
+    return filtered[['original_title', 'poster_url', 'vote_average']]
