@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd 
 import ast
+import time
 from utils.css_loader import load_css
 import string
 from recommendation import (
@@ -8,45 +9,41 @@ from recommendation import (
     recommend_by_actors,
     films,
     get_film_index_by_title,
+    get_films_by_actor
 )
 
 def movie_detail_page():
+
     load_css("movie_style.css")
     load_css("sidebar_style.css")
     st.markdown("<h1 style='color: #fff;'>Recherche</h1>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
+
     # --- LETTRES ALPHABÉTIQUES ---
     all_letters = list(string.ascii_uppercase) + ['#']
 
-    selected_letter = st.radio("Filtrer par lettre", all_letters,label_visibility="hidden", horizontal=True)
 
-    def starts_with_letter(title):
-        if not title or not isinstance(title, str):
-            return False
-        if selected_letter == '#':
-            return not title[0].upper() in string.ascii_uppercase
-        return title.upper().startswith(selected_letter)
+
+    # Barre de recherche
+    search_query = st.text_input("Rechercher un film par titre", value="",placeholder="Titre", label_visibility="collapsed")
 
     filtered_movies = films[["original_title", "poster_url"]].dropna(subset=["original_title"])
-    filtered_movies = filtered_movies[filtered_movies["original_title"].apply(starts_with_letter)]
-    sorted_movies = filtered_movies.sort_values("original_title")
 
-    # --- SEARCH BAR ---
-    search_query = st.text_input("Rechercher un titre", placeholder="Titre , personnage ou genre", label_visibility="collapsed")
 
-    if search_query:
-        # Filter movies based on search query
-        display_movies = sorted_movies[sorted_movies["original_title"].str.lower().str.contains(search_query)]
-        if display_movies.empty:
-            st.info("Aucun film trouvé pour cette recherche.")
+    if search_query.strip() == "":
+        # Aucune recherche : affichage aléatoire de 20 films
+        sampled_movies = filtered_movies.sample(n=min(20, len(filtered_movies)), random_state=None)
     else:
-        # If no search query, display all filtered movies for the selected letter
-        display_movies = sorted_movies
+        # Filtrer par recherche (contient, insensible à la casse)
+        mask = filtered_movies["original_title"].str.contains(search_query, case=False, na=False)
+        sampled_movies = filtered_movies[mask].sort_values("original_title")
 
-
+    # Affichage 5 colonnes
     cols = st.columns(5)
-    for i, (_, row) in enumerate(display_movies.iterrows()):
+
+    for i, (_, row) in enumerate(sampled_movies.iterrows()):
+
         with cols[i % 5]:
             st.markdown(
                 f"""
@@ -65,7 +62,21 @@ def movie_detail_page():
             )
 
 
+    # Auto-refresh toutes les 20 secondes
+    if "last_refresh" not in st.session_state:
+        st.session_state.last_refresh = time.time()
+    if time.time() - st.session_state.last_refresh > 20:
+        st.session_state.last_refresh = time.time()
+        st.rerun()
+
 def show_movie_details(title):
+            # Bouton retour aux films
+    if st.button("⬅ Retour aux films"):
+        # Nettoyer query params et retourner à la liste
+        st.session_state.current_page = 'movie'
+        st.query_params.clear()
+        st.rerun()
+
     load_css("movie_style.css")
     load_css("sidebar_style.css")
 
@@ -170,26 +181,34 @@ def show_movie_details(title):
     st.markdown("<h2 style='color: #fff; margin-top: 30px;'>Acteurs principaux</h2>", unsafe_allow_html=True)
     base_url = "https://image.tmdb.org/t/p/w500"
 
+    # Fonction réutilisable pour sécuriser une URL d'image
+    def get_clean_url(poster, base_url, placeholder_url="https://placehold.co/150x225?text=No+Image"):
+        if not isinstance(poster, str) or pd.isna(poster) or poster.strip() == '':
+            return placeholder_url
+        poster = poster.strip()
+        if not poster.startswith("http"):
+            return base_url + poster
+        return poster
+
+    # Liste des acteurs
     acteurs = [
         {"nom": movie.get("acteurs_1", ""), "poster": movie.get("actors_1_posters", "")},
         {"nom": movie.get("acteurs_2", ""), "poster": movie.get("actors_2_posters", "")},
         {"nom": movie.get("actrices", ""), "poster": movie.get("actress_1_posters", "")},
     ]
 
+    # Affichage dans des colonnes
     acteur_cols = st.columns(len(acteurs))
     for i, acteur in enumerate(acteurs):
-        poster_path = acteur['poster'].strip() if acteur['poster'] else ''
-        if poster_path and not poster_path.startswith("http"):
-            poster_url = base_url + poster_path
-        else:
-            poster_url = poster_path or 'https://placehold.co/150x225?text=No+Image'
+        poster_url = get_clean_url(acteur['poster'], base_url)
 
         with acteur_cols[i]:
             st.markdown(
                 f"""
                 <div style='text-align: center;'>
                     <a href="?actor={acteur['nom']}" target="_self" style="text-decoration: none; color: inherit;">
-                        <img src="{poster_url}"
+
+                        <img src="{poster_url}" 
                             style="
                                 width: 300px;
                                 height: 300px;
@@ -205,7 +224,7 @@ def show_movie_details(title):
                 unsafe_allow_html=True
             )
 
-    ### --------- Bloc réalisateur sous les acteurs---------
+    ### --------- Bloc réalisateur -----------------------------
     st.markdown("<h2 style='color: #fff; margin-top: 40px;'>Réalisateur</h2>", unsafe_allow_html=True)
     
     # Récupération du poster du réalisateur depuis les données du film
@@ -213,13 +232,19 @@ def show_movie_details(title):
     realisateur_poster = movie.get('directors_1_posters', '')  # À adapter si on a une url ou un chemin d'image pour le réalisateur
     
     # Gestion robuste de l'URL du poster
-    if pd.isna(realisateur_poster) or realisateur_poster == '':
-        realisateur_poster = "https://placehold.co/150x225?text=No+Image"
-    else:
-        realisateur_poster = str(realisateur_poster)
-        if not realisateur_poster.startswith("https://"):
-            realisateur_poster = base_url + realisateur_poster
+    # Fonction pour nettoyer et sécuriser une URL d'image
+    def get_clean_url(poster, base_url, placeholder_url="https://placehold.co/150x225?text=No+Image"):
+        if not isinstance(poster, str) or pd.isna(poster) or poster.strip() == '':
+            return placeholder_url
+        poster = poster.strip()
+        if not poster.startswith("http"):
+            return base_url + poster
+        return poster
 
+    # Application de la fonction
+    realisateur_poster = get_clean_url(realisateur_poster, base_url)
+
+    # Affichage du bloc
     col_real = st.columns(1)
     with col_real[0]:
         st.markdown(
@@ -234,7 +259,10 @@ def show_movie_details(title):
                             border: 1px solid white;
                             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
                         ">
-                    <p style='color: white; font-weight: bold; margin-top: 8px;font-size: 18px;'>{realisateur_nom}</p>
+
+                    <a href="?director={realisateur_nom}" target="_self" style="text-decoration: none; color: white;">
+                    <p style='font-weight: bold; margin-top: 8px;font-size: 18px;'>{realisateur_nom}</p>
+                    </a>            
             </div>
             """,
             unsafe_allow_html=True
@@ -281,5 +309,88 @@ def show_movie_details(title):
                     """,
                     unsafe_allow_html=True
                 )
-    else:
+
+    else: 
         st.info("Aucune recommandation basée sur les acteurs.")
+
+## ___________________________________________________________________________________________________________________________
+## ----------------------------- Liste de Films par acteurs -----------------------------------------------------------------------------
+## ___________________________________________________________________________________________________________________________
+def show_actor_page(actor_name):
+    st.markdown(f"<h1 style='text-align: center; color: #fff;'>Films avec {actor_name}</h1>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    df = get_films_by_actor(actor_name)
+
+    if df.empty:
+        st.info("Aucun film trouvé pour cet acteur.")
+        return
+
+    cols = st.columns(5)
+    for i, (_, row) in enumerate(df.iterrows()):
+        with cols[i % 5]:
+            st.markdown(
+                f"""
+                <div style='display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;'>
+                    <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none; color: inherit;">
+                        <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}"
+                            style="width: 100%; height: 270px; object-fit: cover; border-radius: 10px;">
+                        <div style='color: white; font-weight: bold; text-align: center; margin-top: 8px;'>{row['original_title']}</div>
+                        <div style='color: gold; text-align: center;'>⭐ {row['vote_average']:.1f}</div>
+                    </a>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+        # Bouton retour aux films
+    if st.button("⬅ Retour aux films"):
+        # Nettoyer query params et retourner à la liste
+        st.session_state.current_page = 'movie'
+        st.query_params.clear()
+        st.rerun()
+
+## ___________________________________________________________________________________________________________________________
+## ----------------------------- Liste de Films par réalisateurs -----------------------------------------------------------------------------
+## ___________________________________________________________________________________________________________________________
+
+def show_director_page(director_name):
+    load_css("movie_style.css")
+    st.markdown(f"<h1 style='text-align: center; color: #fff;'>Films réalisés par {director_name}</h1>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Fonction de nettoyage du nom
+    def normalize_name(name):
+        return name.strip().lower().replace("é", "e").replace("-", " ").replace("è", "e").replace("ê", "e")
+
+    # Normalisation pour filtrage
+    normalized = normalize_name(director_name)
+    films['realisateurs'] = films['realisateurs'].fillna('').astype(str).apply(normalize_name)
+
+    matched = films[films['realisateurs'] == normalized]
+
+    if matched.empty:
+        st.warning("Aucun film trouvé pour ce réalisateur.")
+        return
+
+    cols = st.columns(5)
+    for i, (_, row) in enumerate(matched.iterrows()):
+        with cols[i % 5]:
+            st.markdown(
+                f"""
+                <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none;">
+                    <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}" 
+                         style="width:100%; height: 270px; object-fit: cover; border-radius: 10px;">
+                    <p style='color: white; font-weight: bold; font-size: 16px; text-align: center;'>
+                        {row['original_title']}
+                    </p>
+                </a>
+                """,
+                unsafe_allow_html=True
+            )
+
+    st.markdown("<br><hr>", unsafe_allow_html=True)
+    if st.button("⬅ Retour aux films"):
+        st.session_state.current_page = 'movie'
+        st.query_params.clear()
+        st.rerun()
+

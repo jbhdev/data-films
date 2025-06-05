@@ -3,7 +3,7 @@ import os
 from home import home_page
 from search import search_page 
 from mylist import my_list_page
-from movie_detail import movie_detail_page, show_movie_details
+from movie_detail import movie_detail_page, show_movie_details, show_actor_page, show_director_page
 from utils.css_loader import load_css
 
 
@@ -31,11 +31,19 @@ def main():
     # --- Lire les paramètres d'URL ---
     query_params = st.query_params
     movie_param = query_params.get("movie")
+    actor_param = query_params.get("actor") 
+    director_param = query_params.get("director")
 
     # Vérifie si un film est sélectionné dans l'URL
     if movie_param:
         show_movie_details(movie_param)
         return
+    elif actor_param: 
+        show_actor_page(actor_param)
+        return
+    elif director_param:
+        show_director_page(director_param)
+        return    
 
     # --- Sidebar ---
     with st.sidebar:
@@ -45,16 +53,15 @@ def main():
         if st.button("ACCUEIL", key="nav_accueil_sidebar"):
             st.session_state.current_page = 'home'
             st.query_params.clear()
-        #if st.button("RECHERCHE", key="nav_recherche_sidebar"):
-            #st.session_state.current_page = 'search'
-            #st.query_params.clear()
-        if st.button("RECHERCHE", key="nav_films_sidebar"):
-            st.session_state.current_page = 'movie'
+        if st.button("RECHERCHE", key="nav_recherche_sidebar"):
+            st.session_state.current_page = 'search'
             st.query_params.clear()
         if st.button("MA LISTE", key="nav_ma_liste_sidebar"):
             st.session_state.current_page = 'my_list' # <--- CHANGE THIS TO 'my_list'
             st.query_params.clear()
-        
+        if st.button("FILMS", key="nav_films_sidebar"):
+            st.session_state.current_page = 'movie'
+            st.query_params.clear()
 
         
 
