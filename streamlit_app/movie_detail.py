@@ -220,19 +220,26 @@ def show_movie_details(title):
     st.markdown("<h2 style='color: #fff; margin-top: 30px;'>Acteurs principaux</h2>", unsafe_allow_html=True)
     base_url = "https://image.tmdb.org/t/p/w500"
 
+    # Fonction réutilisable pour sécuriser une URL d'image
+    def get_clean_url(poster, base_url, placeholder_url="https://placehold.co/150x225?text=No+Image"):
+        if not isinstance(poster, str) or pd.isna(poster) or poster.strip() == '':
+            return placeholder_url
+        poster = poster.strip()
+        if not poster.startswith("http"):
+            return base_url + poster
+        return poster
+
+    # Liste des acteurs
     acteurs = [
         {"nom": movie.get("acteurs_1", ""), "poster": movie.get("actors_1_posters", "")},
         {"nom": movie.get("acteurs_2", ""), "poster": movie.get("actors_2_posters", "")},
         {"nom": movie.get("actrices", ""), "poster": movie.get("actress_1_posters", "")},
     ]
 
+    # Affichage dans des colonnes
     acteur_cols = st.columns(len(acteurs))
     for i, acteur in enumerate(acteurs):
-        poster_path = acteur['poster'].strip() if acteur['poster'] else ''
-        if poster_path and not poster_path.startswith("http"):
-            poster_url = base_url + poster_path
-        else:
-            poster_url = poster_path or 'https://placehold.co/150x225?text=No+Image'
+        poster_url = get_clean_url(acteur['poster'], base_url)
 
         with acteur_cols[i]:
             st.markdown(
@@ -255,7 +262,7 @@ def show_movie_details(title):
                 unsafe_allow_html=True
             )
 
-    ### --------- Bloc réalisateur sous les acteurs---------
+    ### --------- Bloc réalisateur -----------------------------
     st.markdown("<h2 style='color: #fff; margin-top: 40px;'>Réalisateur</h2>", unsafe_allow_html=True)
     
     # Récupération du poster du réalisateur depuis les données du film
@@ -263,13 +270,19 @@ def show_movie_details(title):
     realisateur_poster = movie.get('directors_1_posters', '')  # À adapter si on a une url ou un chemin d'image pour le réalisateur
     
     # Gestion robuste de l'URL du poster
-    if pd.isna(realisateur_poster) or realisateur_poster == '':
-        realisateur_poster = "https://placehold.co/150x225?text=No+Image"
-    else:
-        realisateur_poster = str(realisateur_poster)
-        if not realisateur_poster.startswith("https://"):
-            realisateur_poster = base_url + realisateur_poster
+    # Fonction pour nettoyer et sécuriser une URL d'image
+    def get_clean_url(poster, base_url, placeholder_url="https://placehold.co/150x225?text=No+Image"):
+        if not isinstance(poster, str) or pd.isna(poster) or poster.strip() == '':
+            return placeholder_url
+        poster = poster.strip()
+        if not poster.startswith("http"):
+            return base_url + poster
+        return poster
 
+    # Application de la fonction
+    realisateur_poster = get_clean_url(realisateur_poster, base_url)
+
+    # Affichage du bloc
     col_real = st.columns(1)
     with col_real[0]:
         st.markdown(
