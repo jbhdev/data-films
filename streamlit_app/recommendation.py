@@ -3,8 +3,10 @@
 import pandas as pd
 import joblib
 import os
+from utils.css_loader import load_css
 from sklearn.neighbors import NearestNeighbors
 from IPython.display import display, HTML
+
 
 
 # Chargement des fichiers nécessaires
@@ -21,6 +23,7 @@ films['poster_url'] = "https://image.tmdb.org/t/p/w500" + films['poster_path']
 # Fonction pour compléter l'URL des posters
 
 def get_full_poster_url(path):
+    load_css("movie_style.css")
     if pd.notna(path) and path != '':
         return f"https://image.tmdb.org/t/p/w185{path}"
     return "https://via.placeholder.com/185x278?text=No+Image"

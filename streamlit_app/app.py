@@ -1,16 +1,18 @@
 import streamlit as st
 import os
 from home import home_page
-from search import search_page
+from search import search_page 
 from mylist import my_list_page
 from movie_detail import movie_detail_page, show_movie_details, show_actor_page, show_director_page
 from utils.css_loader import load_css
+
 
 st.set_page_config(
         page_title="Moviestar App",
         layout="wide",
         page_icon="assets/moviestar.png",
     )
+st.balloons()
 
 def init_session_state():
     defaults = {
@@ -51,15 +53,13 @@ def main():
         if st.button("ACCUEIL", key="nav_accueil_sidebar"):
             st.session_state.current_page = 'home'
             st.query_params.clear()
-        if st.button("Delete", key="nav_recherche_sidebar"):
-            st.session_state.current_page = 'search'
+        if st.button("RECHERCHE", key="nav_films_sidebar"):
+            st.session_state.current_page = 'movie'
             st.query_params.clear()
         if st.button("MA LISTE", key="nav_ma_liste_sidebar"):
             st.session_state.current_page = 'my_list' # <--- CHANGE THIS TO 'my_list'
             st.query_params.clear()
-        if st.button("Recherche", key="nav_films_sidebar"):
-            st.session_state.current_page = 'movie'
-            st.query_params.clear()
+        
 
         
 
@@ -69,7 +69,7 @@ def main():
     elif st.session_state.current_page == 'movie':
         movie_detail_page()  # la page qui liste les films (posters cliquables)
     elif st.session_state.current_page == 'my_list':
-        my_list_page()
+        my_list_page() 
     else:
         home_page()
 

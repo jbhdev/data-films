@@ -1,6 +1,6 @@
 /* Thème général de l'application */
 .stApp {
-    background-color: #313131; /* Fond noir */
+    background-color: black; /* Fond noir */
     color: #fff; /* Texte blanc */
     font-family: 'Inter', sans-serif; /* Police moderne */
 }
@@ -180,7 +180,7 @@ div.stButton > button {
     color: white;           /* Texte blanc */
     border: none;
     border-radius: 6px;
-    text-align: center;
+    text-align: center ;
     text-decoration: none;
     font-weight: bold;
     margin: 4px;

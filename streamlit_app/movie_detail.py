@@ -15,12 +15,12 @@ from recommendation import (
 def movie_detail_page():
 
     load_css("movie_style.css")
-    st.markdown("<h1 style='text-align: center; color: #fff;'>Tous les films</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='color: #fff;'>Recherche</h1>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
 
     # Barre de recherche
-    search_query = st.text_input("Rechercher un film par titre", value="",placeholder="Titre", label_visibility="collapsed")
+    search_query = st.text_input("Rechercher un film par titre", value="",placeholder="Titre, Genre, Acteurs", label_visibility="collapsed")
 
     filtered_movies = films[["original_title", "poster_url"]].dropna(subset=["original_title"])
 
