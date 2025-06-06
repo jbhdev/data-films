@@ -1,6 +1,6 @@
 # 🎬 Moviestar App
 
-![Moviestar Logo](streamlit_app/assets/moviestar.png){ width=400px }
+![Moviestar Logo](streamlit_app/assets/moviestar2.png)
 
 
 
