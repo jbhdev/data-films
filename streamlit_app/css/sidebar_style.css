@@ -9,7 +9,7 @@
     margin: 5px 0 !important; /* Space between links */
     transition: color 0.2s !important;
     width: 100% !important; /* Make buttons take full sidebar width */
-    text-align: left !important; /* Align text to the left */
+    text-align: center !important; /* Align text to the left */
 }
 .stSidebar .stButton>button:hover {
     color: #fff !important; /* Hover color */
@@ -44,7 +44,7 @@
 /* Login Button in sidebar */
 .login-button-container {
     margin-top: 30px;
-    text-align: center;
+    text-align: center !important;
 }
 .login-button-container .stButton>button {
     background-color: #007bff !important;

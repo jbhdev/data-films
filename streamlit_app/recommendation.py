@@ -3,8 +3,10 @@
 import pandas as pd
 import joblib
 import os
+from utils.css_loader import load_css
 from sklearn.neighbors import NearestNeighbors
 from IPython.display import display, HTML
+
 
 
 # Chargement des fichiers nécessaires
@@ -21,6 +23,7 @@ films['poster_url'] = "https://image.tmdb.org/t/p/w500" + films['poster_path']
 # Fonction pour compléter l'URL des posters
 
 def get_full_poster_url(path):
+    load_css("movie_style.css")
     if pd.notna(path) and path != '':
         return f"https://image.tmdb.org/t/p/w185{path}"
     return "https://via.placeholder.com/185x278?text=No+Image"
@@ -118,3 +121,25 @@ def recommend_similar_items(index: int, n_neighbors: int = 5) -> pd.DataFrame:
     recs = films.iloc[indices[0]].copy()
     recs["distance"] = distances[0]
     return recs
+
+
+def normalize_name(name):
+    return name.strip().lower() \
+        .replace("é", "e").replace("è", "e") \
+        .replace("-", " ").replace("_", " ") \
+        .replace("ê", "e").replace("ô", "o")
+
+def get_films_by_actor(actor_name: str, original_data: pd.DataFrame = films) -> pd.DataFrame:
+    # Normaliser les colonnes d'acteurs
+    for col in ['acteurs_1', 'acteurs_2', 'actrices']:
+        original_data[col] = original_data[col].fillna('').astype(str).apply(normalize_name)
+
+    actor_name_normalized = normalize_name(actor_name)
+
+    filtered = original_data[
+        (original_data['acteurs_1'] == actor_name_normalized) |
+        (original_data['acteurs_2'] == actor_name_normalized) |
+        (original_data['actrices'] == actor_name_normalized)
+    ]
+
+    return filtered[['original_title', 'poster_url', 'vote_average']]
