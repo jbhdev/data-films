@@ -146,8 +146,7 @@ def home_page():
 
 
 
-
-    # ------ AJOUT : Films à venir ------
+    # ------ AJOUT : Films à venir -- ----
     st.markdown("<h2 style='color: #fff;'>À venir prochainement</h2>", unsafe_allow_html=True)
 
     # Définir la plage des 30 prochains jours et filtrer les films parmi ceux qui ont une date de sortie dans cette plage et qui ont une image disponible
