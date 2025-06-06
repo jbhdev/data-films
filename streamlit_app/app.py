@@ -17,6 +17,7 @@ st.set_page_config(
     )
 
 
+
 # --- Fonction pour charger l'animation Lottie depuis un fichier local ---
 def load_lottie_local(filepath: str):
     try:
@@ -39,10 +40,11 @@ if 'animation_played' not in st.session_state:
 if not st.session_state.animation_played:
     # Utilisez un conteneur pour l'animation
     animation_placeholder = st.empty()
+    
+    
 
-    with animation_placeholder:
+    with animation_placeholder: 
         lottie_json_data = load_lottie_local(LOTTIE_FILEPATH)
-
         if lottie_json_data:
             st_lottie(
                 lottie_json_data,
@@ -52,6 +54,7 @@ if not st.session_state.animation_played:
                 key="logo_animation",
                 loop=False
             )
+            
             # Optionnel : Ajoutez un petit délai pour que l'utilisateur puisse voir l'animation
             time.sleep(3) # Ajustez la durée de l'animation + le temps de pause si besoin
         else:
