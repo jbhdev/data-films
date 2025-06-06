@@ -239,6 +239,7 @@ def show_movie_details(title):
         st.markdown(
             f"""
             <div style='text-align: center; margin-bottom: 40px;'>
+            <a href="?director={realisateur_nom}" target="_self" style="text-decoration: none; color: white;">
                     <img src="{realisateur_poster}" 
                         style="
                             width: 300px;
@@ -248,7 +249,6 @@ def show_movie_details(title):
                             border: 1px solid white;
                             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
                         ">
-                    <a href="?director={realisateur_nom}" target="_self" style="text-decoration: none; color: white;">
                     <p style='font-weight: bold; margin-top: 8px;font-size: 18px;'>{realisateur_nom}</p>
                     </a>            
             </div>
