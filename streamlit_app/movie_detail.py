@@ -112,7 +112,8 @@ def show_movie_details(title):
             note_color = "crimson"
 
         # Convertir la note en étoiles
-        stars = "⭐" * int(round(vote_average)/2) + "☆" * (5 - int(round(vote_average / 2)))
+        filled_stars = int(round(vote_average / 2))  # Convertir sur 5 étoiles
+        stars = "⭐" * filled_stars + "☆" * (5 - filled_stars)
 
         # Affichage final
         st.markdown(f"""

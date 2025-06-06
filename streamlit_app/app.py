@@ -47,8 +47,8 @@ if not st.session_state.animation_played:
             st_lottie(
                 lottie_json_data,
                 speed=1,
-                width=300,
-                height=300,
+                width=600,
+                height=600,
                 key="logo_animation",
                 loop=False
             )
