@@ -1,5 +1,8 @@
 import streamlit as st
 import os
+from streamlit_lottie import st_lottie
+import json
+import time
 from home import home_page
 from search import search_page 
 from mylist import my_list_page
@@ -12,7 +15,59 @@ st.set_page_config(
         layout="wide",
         page_icon="assets/moviestar.png",
     )
-st.balloons()
+
+
+# --- Fonction pour charger l'animation Lottie depuis un fichier local ---
+def load_lottie_local(filepath: str):
+    try:
+        with open(filepath, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        st.error(f"Erreur : Le fichier Lottie '{filepath}' est introuvable. Assurez-vous qu'il est au même niveau que votre script Streamlit ou indiquez le chemin complet.")
+        return None
+    except json.JSONDecodeError:
+        st.error(f"Erreur : Le fichier '{filepath}' n'est pas un JSON valide. Veuillez vérifier votre fichier Lottie.")
+        return None
+
+# --- Chemin de votre animation Lottie locale ---
+LOTTIE_FILEPATH = "assets/animation.json"
+
+# --- Session State pour contrôler l'affichage de l'animation ---
+if 'animation_played' not in st.session_state:
+    st.session_state.animation_played = False
+# Si l'animation n'a pas encore été jouée
+if not st.session_state.animation_played:
+    # Utilisez un conteneur pour l'animation
+    animation_placeholder = st.empty()
+
+    with animation_placeholder:
+        lottie_json_data = load_lottie_local(LOTTIE_FILEPATH)
+
+        if lottie_json_data:
+            st_lottie(
+                lottie_json_data,
+                speed=1,
+                width=300,
+                height=300,
+                key="logo_animation",
+                loop=False
+            )
+            # Optionnel : Ajoutez un petit délai pour que l'utilisateur puisse voir l'animation
+            time.sleep(3) # Ajustez la durée de l'animation + le temps de pause si besoin
+        else:
+            # Le message d'erreur est déjà géré dans load_lottie_local
+            pass
+
+    # Efface le contenu du placeholder une fois l'animation "terminée"
+    animation_placeholder.empty()
+
+    # Marquez l'animation comme jouée pour cette session
+    st.session_state.animation_played = True
+    
+    # Un petit délai avant d'afficher le contenu principal pour un effet plus doux
+    time.sleep(0.5) # Décommentez si vous voulez une micro-pause après le fondu "simulé"
+
+
 
 def init_session_state():
     defaults = {
