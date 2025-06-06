@@ -19,11 +19,7 @@ def home_page():
     if movie_param:
         show_movie_details(movie_param)
         return
-    # --- Moviestar Banner Section ---
-    st.markdown("<h1 style='color: #fff;'>Déjà sur Moviestar</h1>", unsafe_allow_html=True)
-    st.image("https://disney.images.edge.bamgrid.com/ripcut-delivery/v2/variant/disney/415b599e-9d55-4809-9dbc-38bd89fe14ac/compose?format=webp&label=hero_carousel_none_300&width=2880",
-             use_container_width=True,
-             caption="American Dad, Saison 20 disponible dès maintenant, 2005, Comédie, Animation")
+ 
 
     # Charger les films
     films = pd.read_csv('datasets/raw/films.csv')
@@ -41,15 +37,89 @@ def home_page():
     # Convertir release_date en datetime
     films['release_date'] = pd.to_datetime(films['release_date'], errors='coerce')
 
-    # Filtrer les films avec une note supérieure à 8
-    top_movies = films[films['vote_average'] > 8]
 
-    # Vérifier s'il y a des films disponibles
-    if top_movies.empty:
-        st.warning("Aucun film avec une note supérieure à 8 trouvé.")
-        return
 
-    # Sélection aléatoire de 8 films parmi ceux filtrés
+
+    # Filtrer les films du genre drame avec une note supérieure à 8
+    drama_movies = films[(films['vote_average'] > 8) & (films['poster_path'].notna()) & (films['poster_path'] != "") & (films['genres'].str.contains("Drama", case=False, na=False))]
+
+
+    # Sélection aléatoire de 5 films parmi ceux filtrés
+    selected_drama_movies = drama_movies.sample(n=min(len(drama_movies), 5)).copy()
+    selected_drama_movies['poster_path'] = BASE_URL + selected_drama_movies['poster_path'].astype(str)
+    drama = selected_drama_movies.to_dict(orient='records')
+
+    # Affichage des films en colonnes
+    st.markdown("<h2 style='color: #fff;'>Top Drames</h2>", unsafe_allow_html=True)
+    cols = st.columns(min(len(drama), 5))
+
+    for i, movie in enumerate(drama):
+        with cols[i]:
+            st.image(movie["poster_path"], use_container_width=True)
+            st.markdown(
+                 f"""<p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
+                <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
+                """,
+                unsafe_allow_html=True
+            )
+
+
+
+    # Filtrer les films du genre Comedy avec une note supérieure à 8
+    comedy_movies = films[(films['vote_average'] > 8) & (films['poster_path'].notna()) & (films['poster_path'] != "") & (films['genres'].str.contains("Comedy", case=False, na=False))]
+
+
+    # Sélection aléatoire de 5 films parmi ceux filtrés
+    selected_comedy_movies = comedy_movies.sample(n=min(len(comedy_movies), 5)).copy()
+    selected_comedy_movies['poster_path'] = BASE_URL + selected_comedy_movies['poster_path'].astype(str)
+    comedy = selected_comedy_movies.to_dict(orient='records')
+
+    # Affichage des films en colonnes
+    st.markdown("<h2 style='color: #fff;'>Top Comedy</h2>", unsafe_allow_html=True)
+    cols = st.columns(min(len(comedy), 5))
+
+    for i, movie in enumerate(comedy):
+        with cols[i]:
+            st.image(movie["poster_path"], use_container_width=True)
+            st.markdown(
+                 f"""<p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
+                <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
+                """,
+                unsafe_allow_html=True
+            )
+
+
+# Filtrer les films du genre Romance avec une note supérieure à 8
+    romance_movies = films[(films['vote_average'] > 8) & (films['poster_path'].notna()) & (films['poster_path'] != "") & (films['genres'].str.contains("Romance", case=False, na=False))]
+
+
+    # Sélection aléatoire de 5 films parmi ceux filtrés
+    selected_romance_movies = romance_movies.sample(n=min(len(romance_movies), 5)).copy()
+    selected_romance_movies['poster_path'] = BASE_URL + selected_romance_movies['poster_path'].astype(str)
+    romance = selected_romance_movies.to_dict(orient='records')
+
+    # Affichage des films en colonnes
+    st.markdown("<h2 style='color: #fff;'>Top Romance</h2>", unsafe_allow_html=True)
+    cols = st.columns(min(len(romance), 5))
+
+    for i, movie in enumerate(romance):
+        with cols[i]:
+            st.image(movie["poster_path"], use_container_width=True)
+            st.markdown(
+                 f"""<p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
+                <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
+                """,
+                unsafe_allow_html=True
+            )
+
+
+
+
+    # Filtrer les films avec une note supérieure à 9 et avec une image disponible
+    top_movies = films[(films['vote_average'] > 9) & (films['poster_path'].notna()) & (films['poster_path'] != "")]
+
+
+       # Sélection aléatoire de 5 films parmi ceux filtrés
     selected_movies = top_movies.sample(n=min(len(top_movies), 5)).copy()
     selected_movies['poster_path'] = BASE_URL + selected_movies['poster_path'].astype(str)
     movies = selected_movies.to_dict(orient='records')
@@ -60,27 +130,30 @@ def home_page():
 
     for i, movie in enumerate(movies):
         with cols[i]:
-            st.image(movie["poster_path"], use_container_width=True)
-            st.markdown(
-                f"""<a href="?movie={movie['original_title']}" style="text-decoration: none;"> </a>
-                <p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
-                <p style='color: #999; font-size: 12px;'>⭐ {movie["vote_average"]} | {movie["release_date"].strftime('%d %b %Y')} | {movie["genres"]}</p>
-                """
-                   ,
-                unsafe_allow_html=True
-            )
-            
-            if st.button(f"Voir le film", key=f"home_btn_{movie['original_title']}"):
-                st.session_state.selected_movie = movie 
-                st.session_state.current_page = "movie_detail"
-                st.rerun()  # Force la redirection
+            with st.container():
+                st.image(movie["poster_path"], use_container_width=True)
+                st.markdown(
+                     f"""<a href="?movie={movie['original_title']}" style="text-decoration: none;"> </a>
+                     <p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
+                     <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
+                    """,
+                    unsafe_allow_html=True
+                )
+                
+
+
+
+
+
+
 
     # ------ AJOUT : Films à venir ------
     st.markdown("<h2 style='color: #fff;'>À venir prochainement</h2>", unsafe_allow_html=True)
 
-    # Définir la plage des 30 prochains jours
+    # Définir la plage des 30 prochains jours et filtrer les films parmi ceux qui ont une date de sortie dans cette plage et qui ont une image disponible
     today = datetime.today()
-    upcoming_movies = films[(films['release_date'] > today) & (films['release_date'] <= today + timedelta(days=30))]
+    upcoming_movies = films[(films['release_date'] > today) & (films['release_date'] <= today + timedelta(days=30)) & (films['poster_path'].notna()) & (films['poster_path'] != "")]
+
 
     if upcoming_movies.empty:
         st.warning("Aucun film prévu dans les 30 prochains jours.")
@@ -102,6 +175,7 @@ def home_page():
                     unsafe_allow_html=True
                 )
 
+                
     # Rafraîchir automatiquement toutes les 15 secondes
     time.sleep(15)
     st.rerun()
