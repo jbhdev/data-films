@@ -1,95 +1,163 @@
+#______________________________________________________________________________________________________________
 import streamlit as st
 import pandas as pd 
 import ast
 import time
+from streamlit_autorefresh import st_autorefresh
 from utils.css_loader import load_css
-import string
 from recommendation import (
     get_recommendations_by_title,
     recommend_by_actors,
     films,
     get_film_index_by_title,
-    get_films_by_actor
-)
+    get_films_by_actor)
+#_______________________________________________________________________________________________________________
 
+
+# Fonction pour afficher les films avec la zone de recherche
 def movie_detail_page():
 
+    # Auto-refresh toutes les 15 secondes (15000 ms)
+    st_autorefresh(interval=15 * 1000, key="refresh_movies")
+
+    # CSS
     load_css("movie_style.css")
-    st.markdown("<h1 style='color: #fff;'>Recherche</h1>", unsafe_allow_html=True)
+    
+    # CSS personnalisé pour modifier la couleur du texte dans les zones de saisie
+    st.markdown("""
+    <style>
+    input[type="text"], .stTextInput > div > div > input {
+        color: white !important;
+        background-color: #222 !important;
+    }
+    .stMultiSelect div[data-baseweb="select"] > div {
+        color: white !important;
+        background-color: #222 !important;
+        font-size:105%; 
+        font-weight:bold; 
+    }
+    /* Placeholder pour la zone input recherche text */
+    input::placeholder {
+        color: #eee !important;
+        font-size:105%;  
+    }          
+    label {
+        color: white !important;
+        font-weight: bold;
+        font-size: 40px;
+        }
+    </style>
+                
+    """, unsafe_allow_html=True)
+
+    # Titre
+    st.markdown("<h1 style='text-align: center;color: #fff;'>Recherche</h1>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
+    # Extraire tous les genres uniques dans un set pour éviter les doublons
+    all_genres_set = set()
+
+    for entry in films['genres'].dropna():
+        try:
+            # Si c'est une chaîne, on essaie de la convertir en liste
+            genre_list = ast.literal_eval(entry) if isinstance(entry, str) else entry
+            if isinstance(genre_list, list):
+                all_genres_set.update([g.strip() for g in genre_list])
+            else:
+                all_genres_set.add(str(genre_list).strip())
+        except:
+            continue
+
+    # Convertir en liste triée
+    all_genres = sorted(all_genres_set)
 
     # Barre de recherche
-    search_query = st.text_input("Rechercher un film par titre", value="",placeholder="Quel est le titre de votre film?", label_visibility="collapsed")
+    search_query = st.text_input("Rechercher un film par titre", placeholder="Entrez le titre du film")
+    selected_genres = st.multiselect("Filtrer par genre(s)", placeholder="Choisissez des genres", options=all_genres, default=[])
 
-    filtered_movies = films[["original_title", "poster_url"]].dropna(subset=["original_title"])
+    # Suppression des titres manquants et copie du dataframe  avec les colonnes voulues
+    filtered_movies = films[["original_title", "poster_url", "genres"]].dropna(subset=["original_title"]).copy()
 
-    if search_query.strip() == "":
-        # Aucune recherche : affichage aléatoire de 20 films
+    # Filtrer par recherche (contient, insensible à la casse)
+    if search_query.strip() != "":
+        mask = filtered_movies["original_title"].str.contains(search_query, case=False, na=False)
+        filtered_movies = filtered_movies[mask]
+
+    # Filtrage par genres
+    if selected_genres:
+        def has_selected_genre(genres_field):
+            try:
+                genre_list = ast.literal_eval(genres_field) if isinstance(genres_field, str) else genres_field
+                return any(genre in genre_list for genre in selected_genres)
+            except:
+                return False
+        filtered_movies = filtered_movies[filtered_movies["genres"].apply(has_selected_genre)]
+
+    # Si aucun filtre actif, affichage aléatoire de 20 films
+    if search_query.strip() == "" and not selected_genres:
         sampled_movies = filtered_movies.sample(n=min(20, len(filtered_movies)), random_state=None)
     else:
-        # Filtrer par recherche (contient, insensible à la casse)
-        mask = filtered_movies["original_title"].str.contains(search_query, case=False, na=False)
-        sampled_movies = filtered_movies[mask].sort_values("original_title")
+        sampled_movies = filtered_movies.sort_values("original_title")
 
-    # Affichage 5 colonnes
-    cols = st.columns(5)
-    for i, (_, row) in enumerate(sampled_movies.iterrows()):
-        with cols[i % 5]:
-            st.markdown(
-                f"""
-                <div style='display: flex; flex-direction: column; align-items: center; height: 340px; margin-bottom: 10px;'>
-                    <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none; width: 100%;">
-                        <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}"
-                            style="width: 100%; height: 270px; object-fit: cover; border-radius: 10px;">
-                        <div style='height: 50px; color: white; font-weight: bold; text-align: center; 
-                                    display: flex; align-items: center; justify-content: center; padding: 0 5px; overflow: hidden;'>
-                            {row['original_title']}
-                        </div>
-                    </a>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+    # Films trouvés
+    if sampled_movies.empty:
+        st.info("Aucun film à afficher pour les critères sélectionnés.")
+    else:
+        # Affichage 5 colonnes
+        n_cols = min(5, len(sampled_movies))
+        cols = st.columns(n_cols if n_cols > 0 else 1)
+        for i, (_, row) in enumerate(sampled_movies.iterrows()):
+            with cols[i % n_cols]:
+                # Affichage des films
+                st.markdown(
+                    f"""
+                    <div style='display: flex; flex-direction: column; align-items: center; height: 340px; margin-bottom: 10px;'>
+                        <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none; width: 100%;">
+                            <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}"
+                                style="width: 100%; height: 270px; object-fit: cover; border-radius: 10px;">
+                            <div style='height: 50px; color: white; font-weight: bold; text-align: center; 
+                                        display: flex; align-items: center; justify-content: center; padding: 0 5px; overflow: hidden;'>
+                                {row['original_title']}
+                            </div>
+                        </a>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
-    # Auto-refresh toutes les 20 secondes
-    if "last_refresh" not in st.session_state:
-        st.session_state.last_refresh = time.time()
-    if time.time() - st.session_state.last_refresh > 20:
-        st.session_state.last_refresh = time.time()
-        st.rerun()
-
+# Fonction pour afficher les details d'un film  
 def show_movie_details(title):
-            # Bouton retour aux films
+    # Bouton retour aux films
     if st.button("⬅ Retour aux films"):
         # Nettoyer query params et retourner à la liste
         st.session_state.current_page = 'movie'
         st.query_params.clear()
         st.rerun()
 
+    # CSS
     load_css("movie_style.css")
 
+    # Recherche d'un film dans tout le dataframe
     movie_data = films[films["original_title"] == title]
     if movie_data.empty:
         st.error("Film introuvable.")
         return
 
+    # 
     movie = movie_data.iloc[0]
-    trailer_url = movie.get("trailer_url")
-
-    st.markdown(f"<h1 style='text-align: center; color: #fff;'>{title} ({movie.get('startYear', 'Année inconnue')})</h1>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    if "show_trailer" not in st.session_state:
-        st.session_state.show_trailer = False
-
+    
     # Structure principale : affiche + détails côte à côte
     cols = st.columns([1, 2])
-
+    
     with cols[0]:
+        # Affichage de l'image
         st.image(movie.get('poster_url', 'https://placehold.co/300x450?text=No+Image'), width=450)
 
     with cols[1]:
+        # Affichage du titre et de l'année
+        st.markdown(f"<h1 style='text-align: center; color: #fff;'>{title} ({movie.get('startYear', 'Année inconnue')})</h1>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+
         # Convertir genres (liste) en chaîne
         genres = movie.get('genres', 'Genre inconnu')
         try:
@@ -139,18 +207,31 @@ def show_movie_details(title):
             if st.button("🎬 Bande Annonce"):
                 st.session_state.show_trailer = not st.session_state.show_trailer
         with col2:
-            st.button("➕ Ajouter à ma liste")
+            if st.button("➕ Ajouter à ma liste", key=f"add_{title}"):
+                # Récupère la liste depuis l'état de session (initialisée dans init_session_state)
+                if title not in st.session_state.my_list:
+                    st.session_state.my_list.append(title)
+                    st.success("Ajouté à votre liste !")
+                else:
+                    st.info("Ce film est déjà dans votre liste.")
+                
+    # Bande annonce récupération
+    trailer_url = movie.get("trailer_url")
 
+    # Bande annonce affichage
+    if "show_trailer" not in st.session_state:
+        st.session_state.show_trailer = False
 
     # Bande annonce sous les boutons si activé
     if st.session_state.show_trailer and trailer_url:
+        # Initialisation de l'identifiant YouTube
         youtube_id = None
-
+        # Recherche de l'identifiant youtube
         if isinstance(trailer_url, str) and"watch?v=" in trailer_url:
             youtube_id = trailer_url.split("watch?v=")[-1]
         elif isinstance(trailer_url, str) and "youtu.be/" in trailer_url:
             youtube_id = trailer_url.split("youtu.be/")[-1]
-
+        # Affichage de la bande annonce
         if youtube_id:
             st.markdown(
                 f"""
@@ -167,9 +248,7 @@ def show_movie_details(title):
             # Pas de trailer ou URL non reconnue, on affiche un message à la place
             st.markdown("### Bande annonce indisponible 😞", unsafe_allow_html=True)
 
-    # Acteurs principaux
-    st.markdown("<h2 style='color: #fff; margin-top: 30px;'>Acteurs principaux</h2>", unsafe_allow_html=True)
-    base_url = "https://image.tmdb.org/t/p/w500"
+# ------------------------------ Section pour le casting et crew ------------------------------------
 
     # Fonction réutilisable pour sécuriser une URL d'image
     def get_clean_url(poster, base_url, placeholder_url="https://placehold.co/150x225?text=No+Image"):
@@ -179,7 +258,12 @@ def show_movie_details(title):
         if not poster.startswith("http"):
             return base_url + poster
         return poster
-
+    
+    base_url = "https://image.tmdb.org/t/p/w500"
+   
+    # ---------------------------------------Acteurs principaux---------------------------------------------
+    st.markdown("<h2 style='color: #fff; margin-top: 30px;'>Acteurs principaux</h2>", unsafe_allow_html=True)
+    
     # Liste des acteurs
     acteurs = [
         {"nom": movie.get("acteurs_1", ""), "poster": movie.get("actors_1_posters", "")},
@@ -199,10 +283,10 @@ def show_movie_details(title):
                     <a href="?actor={acteur['nom']}" target="_self" style="text-decoration: none; color: inherit;">
                         <img src="{poster_url}" 
                             style="
-                                width: 300px;
-                                height: 300px;
+                                width: 400px;
+                                height: 400px;
                                 object-fit: cover;
-                                border-radius: 10%;
+                                border-radius: 5%;
                                 border: 1px solid white;
                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
                             ">
@@ -213,23 +297,13 @@ def show_movie_details(title):
                 unsafe_allow_html=True
             )
 
-    ### --------- Bloc réalisateur -----------------------------
+    ### ------------------------------------ Réalisateur ------------------------------------------------
     st.markdown("<h2 style='color: #fff; margin-top: 40px;'>Réalisateur</h2>", unsafe_allow_html=True)
     
     # Récupération du poster du réalisateur depuis les données du film
     realisateur_nom = movie.get('realisateurs', 'Inconnu')
     realisateur_poster = movie.get('directors_1_posters', '')  # À adapter si on a une url ou un chemin d'image pour le réalisateur
     
-    # Gestion robuste de l'URL du poster
-    # Fonction pour nettoyer et sécuriser une URL d'image
-    def get_clean_url(poster, base_url, placeholder_url="https://placehold.co/150x225?text=No+Image"):
-        if not isinstance(poster, str) or pd.isna(poster) or poster.strip() == '':
-            return placeholder_url
-        poster = poster.strip()
-        if not poster.startswith("http"):
-            return base_url + poster
-        return poster
-
     # Application de la fonction
     realisateur_poster = get_clean_url(realisateur_poster, base_url)
 

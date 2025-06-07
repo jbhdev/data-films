@@ -1,0 +1,80 @@
+
+
+movie_detail_page()
+│
+├─ st_autorefresh(interval=15s)  # auto-refresh toutes les 15 secondes
+│
+├─ load_css("movie_style.css")   # chargement CSS spécifique
+│
+├─ st.markdown()  # Injection CSS personnalisée pour le style des inputs
+│
+├─ st.markdown()  # Titre centré "Recherche"
+│
+├─ Extraction des genres uniques dans all_genres_set
+│    ├─ Parcours des genres dans films['genres']
+│    ├─ Conversion chaîne en liste via ast.literal_eval
+│    └─ Ajout des genres dans un set pour éviter doublons
+│
+├─ Tri des genres → all_genres (liste triée)
+│
+├─ Barre de recherche :
+│    ├─ search_query = st.text_input(...)  # Recherche texte
+│    └─ selected_genres = st.multiselect(...)  # Filtre par genres
+│
+├─ Préparation dataframe filtered_movies (films avec titres non nuls)
+│
+├─ Filtrage selon recherche texte (search_query) → subset des films
+│
+├─ Filtrage selon genres sélectionnés (selected_genres)
+│    └─ Fonction has_selected_genre() appliquée aux genres
+│
+├─ Si aucun filtre actif :
+│    └─ sampled_movies = échantillon aléatoire de 20 films
+│
+├─ Sinon :
+│    └─ sampled_movies = films triés par titre
+│
+├─ Affichage des résultats :
+│    ├─ Si sampled_movies est vide
+│    │    └─ st.info("Aucun film à afficher pour les critères sélectionnés.")
+│    └─ Sinon (films trouvés) :
+│          ├─ Calcul du nombre de colonnes (max 5)
+│          ├─ Création colonnes avec st.columns()
+│          └─ Pour chaque film (row) dans sampled_movies :
+│                └─ Affichage dans colonne correspondante :
+│                     ├─ Affiche le poster avec un lien cliquable (URL ?movie=titre)
+│                     └─ Affiche le titre centré sous l'image
+
+
+
+
++-----------------------------------------------------------------------------------+
+|                                   Recherche                                      |
+|                          (Titre centré, couleur blanche)                        |
++-----------------------------------------------------------------------------------+
+_____________________________________________________________________________________
+[ Rechercher un film par titre:  ____________________________  ]
+         (placeholder : "Entrez le titre du film")
+¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨
+_____________________________________________________________________________________
+[ Filtrer par genre(s):  (Multiselect dropdown avec choix multiples) ]
+         (placeholder : "Choisissez des genres")
+¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨
+-------------------------------------------------------------------------------------
+
+Affichage des films (maximum 5 colonnes) :
+
++-----------------+ +-----------------+ +-----------------+ +-----------------+ +-----------------+
+|                 | |                 | |                 | |                 | |                 |
+|   [ Poster ]    | |   [ Poster ]    | |   [ Poster ]    | |   [ Poster ]    | |   [ Poster ]    |
+|   (image 270px)  | |   (image 270px)  | |   (image 270px)  | |   (image 270px)  | |   (image 270px)  |
+|                 | |                 | |                 | |                 | |                 |
+|  Titre du film  | |  Titre du film  | |  Titre du film  | |  Titre du film  | |  Titre du film  |
+| (texte centré,  | | (texte centré,  | | (texte centré,  | | (texte centré,  | | (texte centré,  |
+|  blanc, gras)   | |  blanc, gras)   | |  blanc, gras)   | |  blanc, gras)   | |  blanc, gras)   |
++-----------------+ +-----------------+ +-----------------+ +-----------------+ +-----------------+
+
+Si aucun film ne correspond :
+
+[ Info box : "Aucun film à afficher pour les critères sélectionnés." ]
+
