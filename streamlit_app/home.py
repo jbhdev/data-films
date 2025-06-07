@@ -74,7 +74,7 @@ def home_page():
     comedy = selected_comedy_movies.to_dict(orient='records')
 
     # Affichage des films en colonnes
-    st.markdown("<h2 style='color: #fff;'>Notre sélectionnn <span style='color:#fdc74c';>Comédie</span></h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: #fff;'>Notre sélection <span style='color:#fdc74c';>Comédie</span></h2>", unsafe_allow_html=True)
     cols = st.columns(min(len(comedy), 5))
 
     for i, movie in enumerate(comedy):
