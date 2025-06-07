@@ -30,7 +30,7 @@ def load_lottie_local(filepath: str):
         return None
 
 # --- Chemin de votre animation Lottie locale ---
-LOTTIE_FILEPATH = "assets/animation.json"
+LOTTIE_FILEPATH = "assets/panda.json"
 
 # --- Session State pour contrôler l'affichage de l'animation ---
 if 'animation_played' not in st.session_state:
@@ -43,6 +43,7 @@ if not st.session_state.animation_played:
     
 
     with animation_placeholder: 
+        
         lottie_json_data = load_lottie_local(LOTTIE_FILEPATH)
         if lottie_json_data:
             st_lottie(

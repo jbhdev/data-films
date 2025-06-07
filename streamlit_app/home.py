@@ -6,6 +6,7 @@ from utils.css_loader import load_css
 from movie_detail import show_movie_details
 
 
+
 def home_page():
     # Auto-refresh toutes les 15 secondes (15000 ms)
     st_autorefresh(interval=15 * 1000, limit=None, key="autorefresh")
@@ -37,6 +38,7 @@ def home_page():
 
         BASE_URL = "https://image.tmdb.org/t/p/w500"
         films['release_date'] = pd.to_datetime(films['release_date'], errors='coerce')
+        st.markdown("<h1 style='color: #fff;'>Bienvenue sur Moviestar <br/> <span style='color:#fdc74c';>Au coeur de l'actu ciné Creusoise 🎬 </span></h1>", unsafe_allow_html=True)
 
         def afficher_films(titre, films_list):
             st.markdown(f"<h2 style='color: #fff;'>{titre}</h2>", unsafe_allow_html=True)
@@ -56,7 +58,7 @@ def home_page():
                              (films['genres'].str.contains("Drama", case=False, na=False))]
         selected_drama = drama_movies.sample(n=min(len(drama_movies), 5)).copy()
         selected_drama['poster_path'] = BASE_URL + selected_drama['poster_path'].astype(str)
-        afficher_films("Top Drames", selected_drama.to_dict(orient='records'))
+        afficher_films("Notre sélection <span style='color:#fdc74c';>Drames</span>", selected_drama.to_dict(orient='records'))
 
         # --- COMEDY ---
         comedy_movies = films[(films['vote_average'] > 8) & 
@@ -64,7 +66,7 @@ def home_page():
                               (films['genres'].str.contains("Comedy", case=False, na=False))]
         selected_comedy = comedy_movies.sample(n=min(len(comedy_movies), 5)).copy()
         selected_comedy['poster_path'] = BASE_URL + selected_comedy['poster_path'].astype(str)
-        afficher_films("Top Comedy", selected_comedy.to_dict(orient='records'))
+        afficher_films("Notre sélection <span style='color:#fdc74c';>Comédie</span>", selected_comedy.to_dict(orient='records'))
 
         # --- ROMANCE ---
         romance_movies = films[(films['vote_average'] > 8) & 
@@ -72,14 +74,14 @@ def home_page():
                                (films['genres'].str.contains("Romance", case=False, na=False))]
         selected_romance = romance_movies.sample(n=min(len(romance_movies), 5)).copy()
         selected_romance['poster_path'] = BASE_URL + selected_romance['poster_path'].astype(str)
-        afficher_films("Top Romance", selected_romance.to_dict(orient='records'))
+        afficher_films("Notre sélection <span style='color:#fdc74c';>Romance</span>", selected_romance.to_dict(orient='records'))
 
         # --- TOP MOVIES > 9 ---
         top_movies = films[(films['vote_average'] > 9) & (films['poster_path'].notna())]
         selected_top = top_movies.sample(n=min(len(top_movies), 5)).copy()
         selected_top['poster_path'] = BASE_URL + selected_top['poster_path'].astype(str)
 
-        st.markdown("<h2 style='color: #fff;'>Notre sélection pour vous</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='color: #fff;'>Notre sélection <span style='color:#fdc74c';>Divers</span></h2>", unsafe_allow_html=True)
         cols = st.columns(min(len(selected_top), 5))
         for i, movie in enumerate(selected_top.to_dict(orient='records')):
             with cols[i]:
@@ -93,7 +95,7 @@ def home_page():
                 )
 
         # --- UPCOMING ---
-        st.markdown("<h2 style='color: #fff;'>À venir prochainement</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='color: #fff;'>À venir <span style='color:#fdc74c';>Prochainement</span></h2>", unsafe_allow_html=True)
         today = datetime.today()
         upcoming = films[(films['release_date'] > today) & 
                          (films['release_date'] <= today + timedelta(days=30)) &
