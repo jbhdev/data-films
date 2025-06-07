@@ -51,7 +51,7 @@ def movie_detail_page():
     """, unsafe_allow_html=True)
 
     # Titre
-    st.markdown("<h1 style='text-align: center;color: #fff;'>Recherche</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style= 'color: #fff;'>Recherche</h1>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
     # Extraire tous les genres uniques dans un set pour éviter les doublons
@@ -70,10 +70,16 @@ def movie_detail_page():
 
     # Convertir en liste triée
     all_genres = sorted(all_genres_set)
+    
+    # 2 colonnes pour la barre de recher
+    col1, col2 = st.columns(2)
 
-    # Barre de recherche
-    search_query = st.text_input("Rechercher un film par titre", placeholder="Entrez le titre du film")
-    selected_genres = st.multiselect("Filtrer par genre(s)", placeholder="Choisissez des genres", options=all_genres, default=[])
+    with col1:
+        search_query = st.text_input("Rechercher un film par titre", placeholder="Entrez le titre du film")
+
+    with col2:
+        selected_genres = st.multiselect("Filtrer par genre(s)", placeholder="Action, comédie, drame", options=all_genres, default=[])
+    
 
     # Suppression des titres manquants et copie du dataframe  avec les colonnes voulues
     filtered_movies = films[["original_title", "poster_url", "genres"]].dropna(subset=["original_title"]).copy()
