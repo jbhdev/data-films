@@ -1,0 +1,180 @@
+
+show_movie_details()
+│
+├── Titre film (h1) centré
+│
+├── Conteneur horizontal (2 colonnes)
+│   ├── Colonne 1 : Affiche du film (image large)
+│   └── Colonne 2 : Détails film
+│         ├── Année, genres, durée
+│         ├── Synopsis (texte justifié)
+│         ├── Note avec étoiles et couleur
+│         ├── Boutons bande annonce / ajouter liste (2 colonnes)
+│
+├── Acteurs principaux (3 colonnes)
+│   ├── Photo + Nom (lien)
+│
+├── Réalisateur (1 colonne)
+│   ├── Photo + Nom (lien)
+│
+├── Recommandations par titre (1 ligne colonnes multiples)
+│   ├── Affiches + titres cliquables
+│
+├── Recommandations par acteurs (1 ligne colonnes multiples)
+│   ├── Affiches + titres cliquables
+│
+└── Bouton retour aux films (en bas)
+
+============================>>>>>>>>>>>> Fonction show_movie_detail
+show_movie_details(movie_param)
+│
+├── Récupération des données du film (movie_param)
+│     ├── Titre, année, genres
+│     ├── Synopsis
+│     ├── Note moyenne + nombre de votes
+│     ├── URL affiche (poster)
+│     ├── URL bande annonce (facultatif)
+│     ├── Liste acteurs principaux (avec images + noms)
+│     └── Réalisateur (image + nom)
+│
+├── Construction de l'affichage de la page
+│     ├── Affichage de l'affiche + titre + année + genres
+│     ├── Affichage du synopsis
+│     ├── Affichage de la note moyenne (avec étoiles colorées)
+│     ├── Bouton toggle pour afficher/masquer la bande annonce
+│     ├── Lecture de la bande annonce (si activée)
+│     ├── Section Acteurs principaux
+│     │     ├── Pour chaque acteur
+│     │     │     ├── Affichage image + nom
+│     │     │     └── Lien clic → show_actor_page(actor_param)
+│     ├── Section Réalisateur
+│     │     ├── Affichage image + nom
+│     │     └── Lien clic → show_director_page(director_param)
+│     └── Section Recommandations (films similaires)
+│           ├── Affiche + titre + note pour chaque film recommandé
+│           └── Lien clic → show_movie_details(movie_param)
+│
+└── Gestion des interactions utilisateur
+      ├── Clic sur un acteur → appel show_actor_page(actor_param)
+      ├── Clic sur réalisateur → appel show_director_page(director_param)
+      ├── Clic sur toggle bande annonce → afficher/masquer vidéo
+      └── Clic sur bouton "Ajouter à ma liste" → mise à jour liste utilisateur
+
+
+
+Pour les pages films
+
+
++-----------------------------------------------------------------------------------+
+| [⬅ Retour aux films]                                                              |
+|-----------------------------------------------------------------------------------|
+|  +------------------------+  +-------------------------------------------------+  |
+|  |        Affiche          |  |               Détails film                     |  |
+|  |      (poster 450px)     |  |  - Titre (grand, centré)                        |  |
+|  |                        |  |  - Année, Genres, durée                         |  |
+|  |                        |  |  - Synopsis                                     |  |
+|  +------------------------+  |  - Note avec étoiles (couleur)                   |  |
+|                              |  - Boutons : Bande annonce + Ajouter à ma liste  |  |
+|                              +-------------------------------------------------+  |
+|                                                                                   |
+| [Bande annonce (iframe youtube) sous les boutons, si activé]                     |
+|-----------------------------------------------------------------------------------|
+|  +------------------+  +------------------+  +------------------+                |
+|  | Acteur principal 1|  | Acteur principal 2|  | Actrice principale|                |
+|  | (image + nom)     |  | (image + nom)     |  | (image + nom)     |                |
+|  +------------------+  +------------------+  +------------------+                |
+|                                                                                   |
+|-----------------------------------------------------------------------------------|
+|                              Réalisateur                                         |
+|                   (image + nom, centré, grand)                                   |
+|-----------------------------------------------------------------------------------|
+|                         Titres similaires (max 5 colonnes)                       |
+|  +------------+ +------------+ +------------+ +------------+ +------------+       |
+|  | Poster +   | | Poster +   | | Poster +   | | Poster +   | | Poster +   |       |
+|  | Titre     | | Titre     | | Titre     | | Titre     | | Titre     |       |
+|  +------------+ +------------+ +------------+ +------------+ +------------+       |
+|-----------------------------------------------------------------------------------|
+|                    Autres films avec vos acteurs préférés (max 5 colonnes)        |
+|  +------------+ +------------+ +------------+ +------------+ +------------+       |
+|  | Poster +   | | Poster +   | | Poster +   | | Poster +   | | Poster +   |       |
+|  | Titre     | | Titre     | | Titre     | | Titre     | | Titre     |       |
+|  +------------+ +------------+ +------------+ +------------+ +------------+       |
++-----------------------------------------------------------------------------------+
+
+________________________________________________________________________________________
+show_actor_page(actor_name)
+│
+├── Titre acteur (h1) centré
+│
+├── Liste des films avec cet acteur (grille, 5 colonnes)
+│   ├── Affiche + titre + note (chaque film lien cliquable)
+│
+└── Bouton retour aux films (en bas)
+
+
+show_director_page(director_name)
+│
+├── Titre réalisateur (h1) centré
+│
+├── Liste des films réalisés (grille, 5 colonnes)
+│   ├── Affiche + titre (liens cliquables)
+│
+└── Bouton retour aux films (en bas)
+
+
+
+Pour les pages acteurs ou réalisateurs
+
++-----------------------------------------------------------------------------------+
+|                 [Titre centré : Films avec {acteur / réalisateur}]               |
+|-----------------------------------------------------------------------------------|
+|  Affichage films max 5 colonnes (poster + titre + note)                           |
+|  +------------+ +------------+ +------------+ +------------+ +------------+       |
+|  | Poster +   | | Poster +   | | Poster +   | | Poster +   | | Poster +   |       |
+|  | Titre     | | Titre     | | Titre     | | Titre     | | Titre     |       |
+|  +------------+ +------------+ +------------+ +------------+ +------------+       |
+|-----------------------------------------------------------------------------------|
+|                             [⬅ Retour aux films]                                 |
++-----------------------------------------------------------------------------------+
+
+
+POSSIBLE AMELIORATION 
+
+actor_page()
+│
+├── Titre acteur (h1) centré
+│
+├── Conteneur horizontal (2 colonnes)
+│   ├── Colonne 1 : Photo de l'acteur (image large)
+│   └── Colonne 2 : Infos acteur
+│         ├── Nom complet, date de naissance
+│         ├── Biographie (texte justifié)
+│         ├── Liste des principaux films (titres cliquables)
+│
+├── Films récents (1 ligne colonnes multiples)
+│   ├── Affiches + titres cliquables
+│
+├── Films recommandés par genre (1 ligne colonnes multiples)
+│   ├── Affiches + titres cliquables
+│
+└── Bouton retour aux acteurs (en bas)
+
+
+director_page()
+│
+├── Titre réalisateur (h1) centré
+│
+├── Conteneur horizontal (2 colonnes)
+│   ├── Colonne 1 : Photo du réalisateur (image large)
+│   └── Colonne 2 : Infos réalisateur
+│         ├── Nom complet, date de naissance
+│         ├── Biographie (texte justifié)
+│         ├── Liste des films réalisés (titres cliquables)
+│
+├── Films populaires du réalisateur (1 ligne colonnes multiples)
+│   ├── Affiches + titres cliquables
+│
+├── Acteurs fréquemment collaborés (3 colonnes)
+│   ├── Photo + nom (lien)
+│
+└── Bouton retour aux réalisateurs (en bas)
