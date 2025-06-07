@@ -110,10 +110,9 @@ def movie_detail_page():
         st.info("Aucun film à afficher pour les critères sélectionnés.")
     else:
         # Affichage 5 colonnes
-        n_cols = min(5, len(sampled_movies))
-        cols = st.columns(n_cols if n_cols > 0 else 1)
+        cols = st.columns(5)
         for i, (_, row) in enumerate(sampled_movies.iterrows()):
-            with cols[i % n_cols]:
+            with cols[i % 5]:
                 # Affichage des films
                 st.markdown(
                     f"""
