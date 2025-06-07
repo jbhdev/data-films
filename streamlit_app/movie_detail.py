@@ -3,63 +3,127 @@ import streamlit as st
 import pandas as pd 
 import ast
 import time
+from streamlit_autorefresh import st_autorefresh
 from utils.css_loader import load_css
 from recommendation import (
     get_recommendations_by_title,
     recommend_by_actors,
     films,
     get_film_index_by_title,
-    get_films_by_actor
-)
-
+    get_films_by_actor)
 #_______________________________________________________________________________________________________________
-
 
 
 # Fonction pour afficher les films avec la zone de recherche
 def movie_detail_page():
+
+    # Auto-refresh toutes les 15 secondes (15000 ms)
+    st_autorefresh(interval=15 * 1000, key="refresh_movies")
+
     # CSS
     load_css("movie_style.css")
+    
+    # CSS personnalisé pour modifier la couleur du texte dans les zones de saisie
+    st.markdown("""
+    <style>
+    input[type="text"], .stTextInput > div > div > input {
+        color: white !important;
+        background-color: #222 !important;
+    }
+    .stMultiSelect div[data-baseweb="select"] > div {
+        color: white !important;
+        background-color: #222 !important;
+        font-size:105%; 
+        font-weight:bold; 
+    }
+    /* Placeholder pour la zone input recherche text */
+    input::placeholder {
+        color: #eee !important;
+        font-size:105%;  
+    }          
+    label {
+        color: white !important;
+        font-weight: bold;
+        font-size: 40px;
+        }
+    </style>
+                
+    """, unsafe_allow_html=True)
 
     # Titre
-    st.markdown("<h1 style='color: #fff;'>Recherche</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;color: #fff;'>Recherche</h1>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
+    # Extraire tous les genres uniques dans un set pour éviter les doublons
+    all_genres_set = set()
+
+    for entry in films['genres'].dropna():
+        try:
+            # Si c'est une chaîne, on essaie de la convertir en liste
+            genre_list = ast.literal_eval(entry) if isinstance(entry, str) else entry
+            if isinstance(genre_list, list):
+                all_genres_set.update([g.strip() for g in genre_list])
+            else:
+                all_genres_set.add(str(genre_list).strip())
+        except:
+            continue
+
+    # Convertir en liste triée
+    all_genres = sorted(all_genres_set)
+
     # Barre de recherche
-    search_query = st.text_input("Rechercher un film par titre", value="")
+    search_query = st.text_input("Rechercher un film par titre", placeholder="Entrez le titre du film")
+    selected_genres = st.multiselect("Filtrer par genre(s)", placeholder="Choisissez des genres", options=all_genres, default=[])
+
     # Suppression des titres manquants et copie du dataframe  avec les colonnes voulues
-    filtered_movies = films[["original_title", "poster_url"]].dropna(subset=["original_title"]).copy()
-    # Si la barre de recherche est vide
-    if search_query.strip() == "":
-        # Affichage aléatoire de 20 films
+    filtered_movies = films[["original_title", "poster_url", "genres"]].dropna(subset=["original_title"]).copy()
+
+    # Filtrer par recherche (contient, insensible à la casse)
+    if search_query.strip() != "":
+        mask = filtered_movies["original_title"].str.contains(search_query, case=False, na=False)
+        filtered_movies = filtered_movies[mask]
+
+    # Filtrage par genres
+    if selected_genres:
+        def has_selected_genre(genres_field):
+            try:
+                genre_list = ast.literal_eval(genres_field) if isinstance(genres_field, str) else genres_field
+                return any(genre in genre_list for genre in selected_genres)
+            except:
+                return False
+        filtered_movies = filtered_movies[filtered_movies["genres"].apply(has_selected_genre)]
+
+    # Si aucun filtre actif, affichage aléatoire de 20 films
+    if search_query.strip() == "" and not selected_genres:
         sampled_movies = filtered_movies.sample(n=min(20, len(filtered_movies)), random_state=None)
     else:
-        # Filtrer par recherche (contient, insensible à la casse)
-        mask = filtered_movies["original_title"].str.contains(search_query, case=False, na=False)
-        sampled_movies = filtered_movies[mask].sort_values("original_title")
+        sampled_movies = filtered_movies.sort_values("original_title")
 
-    # Affichage 5 colonnes
-    cols = st.columns(5)
-    for i, (_, row) in enumerate(sampled_movies.iterrows()):
-        with cols[i % 5]:
-            st.markdown(
-                f"""
-                <div style='display: flex; flex-direction: column; align-items: center; height: 340px; margin-bottom: 10px;'>
-                    <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none; width: 100%;">
-                        <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}"
-                            style="width: 100%; height: 270px; object-fit: cover; border-radius: 10px;">
-                        <div style='height: 50px; color: white; font-weight: bold; text-align: center; 
-                                    display: flex; align-items: center; justify-content: center; padding: 0 5px; overflow: hidden;'>
-                            {row['original_title']}
-                        </div>
-                    </a>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-    # Rafraîchir automatiquement toutes les 15 secondes
-    time.sleep(20)
+    # Films trouvés
+    if sampled_movies.empty:
+        st.info("Aucun film à afficher pour les critères sélectionnés.")
+    else:
+        # Affichage 5 colonnes
+        n_cols = min(5, len(sampled_movies))
+        cols = st.columns(n_cols if n_cols > 0 else 1)
+        for i, (_, row) in enumerate(sampled_movies.iterrows()):
+            with cols[i % n_cols]:
+                # Affichage des films
+                st.markdown(
+                    f"""
+                    <div style='display: flex; flex-direction: column; align-items: center; height: 340px; margin-bottom: 10px;'>
+                        <a href="?movie={row['original_title']}" target="_self" style="text-decoration: none; width: 100%;">
+                            <img src="{row.get('poster_url', 'https://placehold.co/300x450?text=No+Image')}"
+                                style="width: 100%; height: 270px; object-fit: cover; border-radius: 10px;">
+                            <div style='height: 50px; color: white; font-weight: bold; text-align: center; 
+                                        display: flex; align-items: center; justify-content: center; padding: 0 5px; overflow: hidden;'>
+                                {row['original_title']}
+                            </div>
+                        </a>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
 # Fonction pour afficher les details d'un film  
 def show_movie_details(title):

@@ -1,0 +1,33 @@
+main.py => app.py 
+│
+├── Variables session_state
+│     ├── current_page (home, movie, my_list)
+│     └── animation_played (bool)
+│
+├── Chargement CSS (style.css, sidebar_style.css)
+│
+├── Chargement animation Lottie au démarrage (si pas déjà jouée)
+│
+├── Lecture paramètres URL (query_params)
+│     ├── movie_param
+│     ├── actor_param
+│     └── director_param
+│
+├── Sidebar
+│     ├── Logo Moviestar
+│     ├── Boutons navigation
+│     │     ├── ACCUEIL  → current_page='home'
+│     │     ├── RECHERCHE → current_page='movie'
+│     │     └── MA LISTE → current_page='my_list'
+│
+├── Contenu principal
+│     ├── Si paramètre URL movie → show_movie_details(movie_param)
+│     ├── Sinon si paramètre URL actor → show_actor_page(actor_param)
+│     ├── Sinon si paramètre URL director → show_director_page(director_param)
+│     └── Sinon affiche page selon current_page
+│           ├── home_page() si 'home'
+│           ├── movie_detail_page() si 'movie'
+│           └── my_list_page() si 'my_list'
+│
+└── Footer
+      └── Mentions légales + liens RGPD, conditions, cookies

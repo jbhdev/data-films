@@ -1,0 +1,67 @@
+
+
+RECAPITULATIF SIMPLIFIE
+
+home_page()
+│
+├── Auto-refresh + chargement CSS
+│
+├── Lecture paramètres URL → affichage détail film si présent
+│
+├── Affichage catégories de films (sections)
+│   ├── Top Drames (h2 + 5 colonnes max affiches)
+│   ├── Top Comedy (idem)
+│   ├── Top Romance (idem)
+│   ├── Notre sélection pour vous (>9) (colonnes + liens films)
+│   └── À venir prochainement (films sortant sous 30j)
+
+
+
+
+home_page()
+│
+├── Auto-refresh toutes les 15 secondes (st_autorefresh)
+│
+├── Chargement CSS (load_css)
+│
+├── Lecture paramètres URL
+│   └── Si paramètre "movie" présent → show_movie_details(movie_param) puis return
+│
+├── Conteneur principal (placeholder.container)
+│
+│   ├── Chargement dataset films (CSV)
+│   ├── Vérification colonnes nécessaires (vote_average, poster_path, original_title, release_date, genres)
+│   ├── Préparation URLs affiches (BASE_URL)
+│   ├── Conversion release_date en datetime
+│
+│   ├── Fonction interne afficher_films(titre, films_list)
+│   │    ├── Titre section (h2)
+│   │    ├── Colonnes horizontales (max 5)
+│   │    └── Pour chaque film : affiche + titre + note + année + genres
+│   │
+│   ├── Section "Top Drames"
+│   │    ├── Filtrage films (vote_average > 8, genre Drama, affiche présente)
+│   │    ├── Sélection aléatoire max 5 films
+│   │    └── appel afficher_films("Top Drames", selected_drama)
+│   │
+│   ├── Section "Top Comedy"
+│   │    ├── Filtrage films (vote_average > 8, genre Comedy, affiche présente)
+│   │    ├── Sélection aléatoire max 5 films
+│   │    └── appel afficher_films("Top Comedy", selected_comedy)
+│   │
+│   ├── Section "Top Romance"
+│   │    ├── Filtrage films (vote_average > 8, genre Romance, affiche présente)
+│   │    ├── Sélection aléatoire max 5 films
+│   │    └── appel afficher_films("Top Romance", selected_romance)
+│   │
+│   ├── Section "Notre sélection pour vous" (films > 9)
+│   │    ├── Filtrage films (vote_average > 9, affiche présente)
+│   │    ├── Sélection aléatoire max 5 films
+│   │    ├── Colonnes horizontales (max 5)
+│   │    └── Pour chaque film : affiche + titre + note + année + genres (titre cliquable avec lien URL "?movie=...")
+│   │
+│   └── Section "À venir prochainement"
+│        ├── Filtrage films sortant dans les 30 prochains jours
+│        ├── Sélection max 5 films (ou message warning si aucun)
+│        ├── Colonnes horizontales (max 5)
+│        └── Pour chaque film : affiche + titre + date sortie + genres
