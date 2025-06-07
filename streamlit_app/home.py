@@ -42,11 +42,11 @@ def home_page():
     films['release_date'] = pd.to_datetime(films['release_date'], errors='coerce')
 
     # Filtrer les films avec une note supérieure à 8
-    top_movies = films[films['vote_average'] > 8]
+    top_movies = films[films['vote_average'] >= 8]
 
     # Vérifier s'il y a des films disponibles
     if top_movies.empty:
-        st.warning("Aucun film avec une note supérieure à 8 trouvé.")
+        st.warning("Aucun film avec une note supérieure ou égale à 8 trouvé.")
         return
 
     # Sélection aléatoire de 8 films parmi ceux filtrés

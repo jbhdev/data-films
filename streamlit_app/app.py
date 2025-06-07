@@ -4,18 +4,18 @@ from streamlit_lottie import st_lottie
 import json
 import time
 from home import home_page
-from search import search_page 
 from mylist import my_list_page
 from movie_detail import movie_detail_page, show_movie_details, show_actor_page, show_director_page
 from utils.css_loader import load_css
 
+if "my_list" not in st.session_state:
+    st.session_state.my_list = []
 
 st.set_page_config(
         page_title="Moviestar App",
         layout="wide",
         page_icon="assets/moviestar.png",
     )
-
 
 # --- Fonction pour charger l'animation Lottie depuis un fichier local ---
 def load_lottie_local(filepath: str):
@@ -46,11 +46,11 @@ if not st.session_state.animation_played:
         if lottie_json_data:
             st_lottie(
                 lottie_json_data,
-                speed=1,
+                speed=3,
                 width=600,
                 height=600,
                 key="logo_animation",
-                loop=False
+                loop=True
             )
             # Optionnel : Ajoutez un petit délai pour que l'utilisateur puisse voir l'animation
             time.sleep(3) # Ajustez la durée de l'animation + le temps de pause si besoin
@@ -64,19 +64,17 @@ if not st.session_state.animation_played:
     # Marquez l'animation comme jouée pour cette session
     st.session_state.animation_played = True
     
-    # Un petit délai avant d'afficher le contenu principal pour un effet plus doux
-    time.sleep(0.5) # Décommentez si vous voulez une micro-pause après le fondu "simulé"
-
 
 
 def init_session_state():
     defaults = {
         'current_page': 'home',
+        
     }
     for key, value in defaults.items():
         if key not in st.session_state:
             st.session_state[key] = value
-
+ 
 def main():
     
     init_session_state()
@@ -93,14 +91,17 @@ def main():
     with st.sidebar:
         st.image("assets/moviestar.png")
         st.markdown("<br>", unsafe_allow_html=True)
+
         if st.button("ACCUEIL", key="nav_accueil_sidebar"):
             st.session_state.current_page = 'home'
             st.query_params.clear()
+
         if st.button("RECHERCHE", key="nav_films_sidebar"):
             st.session_state.current_page = 'movie'
             st.query_params.clear()
+
         if st.button("MA LISTE", key="nav_ma_liste_sidebar"):
-            st.session_state.current_page = 'my_list' # <--- CHANGE THIS TO 'my_list'
+            st.session_state.current_page = 'my_list' 
             st.query_params.clear()
         
     # --- Main content ---
@@ -111,9 +112,7 @@ def main():
     elif director_param:
         show_director_page(director_param)
     else:    
-        if st.session_state.current_page == 'search':
-            search_page()
-        elif st.session_state.current_page == 'movie':
+        if st.session_state.current_page == 'movie':
             movie_detail_page()  # la page qui liste les films (posters cliquables)
         elif st.session_state.current_page == 'my_list':
             my_list_page() 
