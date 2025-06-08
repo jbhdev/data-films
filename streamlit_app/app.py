@@ -32,6 +32,8 @@ def load_lottie_local(filepath: str):
 # --- Chemin de votre animation Lottie locale ---
 LOTTIE_FILEPATH = "assets/panda.json"
 
+
+
 # --- Session State pour contrôler l'affichage de l'animation ---
 if 'animation_played' not in st.session_state:
     st.session_state.animation_played = False

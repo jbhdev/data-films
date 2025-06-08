@@ -38,10 +38,10 @@ def home_page():
 
         BASE_URL = "https://image.tmdb.org/t/p/w500"
         films['release_date'] = pd.to_datetime(films['release_date'], errors='coerce')
-        st.markdown("<h1 style='color: #fff;'>Bienvenue sur Moviestar <br/> <span style='color:#fdc74c';>Au coeur de l'actu ciné Creusoise 🎬 </span></h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='color: #fff; text-align:center; margin-top:-80px;'>Bienvenue sur Moviestar <br/> <span style='color:#fdc74c';>Au coeur de l'actu ciné Creusoise 🎬 </span></h1>", unsafe_allow_html=True)
 
         def afficher_films(titre, films_list):
-            st.markdown(f"<h2 style='color: #fff;'>{titre}</h2>", unsafe_allow_html=True)
+            st.markdown(f"<h2 style='color: #fff; margin-top:40px;'>{titre}</h2>", unsafe_allow_html=True)
             cols = st.columns(min(len(films_list), 5))
             for i, movie in enumerate(films_list):
                 with cols[i]:
