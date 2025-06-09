@@ -115,8 +115,8 @@ def home_page():
 
 
 
-    # Filtrer les films avec une note supérieure à 9 et avec une image disponible
-    top_movies = films[(films['vote_average'] > 9) & (films['poster_path'].notna()) & (films['poster_path'] != "")]
+    # Filtrer les films avec une note supérieure à 8 et avec une image disponible
+    top_movies = films[(films['vote_average'] > 8) & (films['poster_path'].notna()) & (films['poster_path'] != "")]
 
 
        # Sélection aléatoire de 5 films parmi ceux filtrés
@@ -177,5 +177,5 @@ def home_page():
                 
     # Rafraîchir automatiquement toutes les 15 secondes
     time.sleep(15)
-    st.rerun()
+st.rerun()
 
