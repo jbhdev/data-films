@@ -20,6 +20,7 @@ def home_page():
         show_movie_details(movie_param)
         return
  
+    st.image("https://commedesfrancais.com/uploads/images/global/main_pictures/62bf0ae7daca0046410060.jpg", use_column_width=True)
 
     # Charger les films
     films = pd.read_csv('datasets/raw/films.csv')
