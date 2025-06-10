@@ -53,28 +53,76 @@ def home_page():
                     )
 
         # --- DRAMA ---
+        st.markdown("<h2 style='color: #fff;'>Notre sélection <span style='color:#fdc74c';>Drame</span></h2>", unsafe_allow_html=True)
+
         drama_movies = films[(films['vote_average'] > 8) & 
                              (films['poster_path'].notna()) &
                              (films['genres'].str.contains("Drama", case=False, na=False))]
         selected_drama = drama_movies.sample(n=min(len(drama_movies), 5)).copy()
         selected_drama['poster_path'] = BASE_URL + selected_drama['poster_path'].astype(str)
-        afficher_films("Notre sélection <span style='color:#fdc74c';>Drames</span>", selected_drama.to_dict(orient='records'))
+        cols = st.columns(min(len(selected_drama), 5))
+        for i, movie in enumerate(selected_drama.to_dict(orient='records')):
+            with cols[i]:
+                st.markdown(
+                    f"""
+                    <a href="?movie={movie['original_title']}" style="text-decoration: none;">
+                        <div style="text-align: center;">
+                            <img src="{movie['poster_path']}" style="width: 100%; height: auto;">
+                            <p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
+                            <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
+                        </div>
+                    </a>
+                    """,
+                    unsafe_allow_html=True
+                )
 
         # --- COMEDY ---
+        st.markdown("<h2 style='color: #fff;'>Notre sélection <span style='color:#fdc74c';>Comédie</span></h2>", unsafe_allow_html=True)
+
         comedy_movies = films[(films['vote_average'] > 8) & 
                               (films['poster_path'].notna()) &
                               (films['genres'].str.contains("Comedy", case=False, na=False))]
         selected_comedy = comedy_movies.sample(n=min(len(comedy_movies), 5)).copy()
         selected_comedy['poster_path'] = BASE_URL + selected_comedy['poster_path'].astype(str)
-        afficher_films("Notre sélection <span style='color:#fdc74c';>Comédie</span>", selected_comedy.to_dict(orient='records'))
+        cols = st.columns(min(len(selected_comedy), 5))
+        for i, movie in enumerate(selected_comedy.to_dict(orient='records')):
+            with cols[i]:
+                st.markdown(
+                    f"""
+                    <a href="?movie={movie['original_title']}" style="text-decoration: none;">
+                        <div style="text-align: center;">
+                            <img src="{movie['poster_path']}" style="width: 100%; height: auto;">
+                            <p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
+                            <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
+                        </div>
+                    </a>
+                    """,
+                    unsafe_allow_html=True
+                )
 
         # --- ROMANCE ---
+        st.markdown("<h2 style='color: #fff;'>Notre sélection <span style='color:#fdc74c';>Romance</span></h2>", unsafe_allow_html=True)
+
         romance_movies = films[(films['vote_average'] > 8) & 
                                (films['poster_path'].notna()) &
                                (films['genres'].str.contains("Romance", case=False, na=False))]
         selected_romance = romance_movies.sample(n=min(len(romance_movies), 5)).copy()
         selected_romance['poster_path'] = BASE_URL + selected_romance['poster_path'].astype(str)
-        afficher_films("Notre sélection <span style='color:#fdc74c';>Romance</span>", selected_romance.to_dict(orient='records'))
+        cols = st.columns(min(len(selected_romance), 5))
+        for i, movie in enumerate(selected_romance.to_dict(orient='records')):
+            with cols[i]:
+                st.markdown(
+                    f"""
+                    <a href="?movie={movie['original_title']}" style="text-decoration: none;">
+                        <div style="text-align: center;">
+                            <img src="{movie['poster_path']}" style="width: 100%; height: auto;">
+                            <p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
+                            <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
+                        </div>
+                    </a>
+                    """,
+                    unsafe_allow_html=True
+                )
 
         # --- TOP MOVIES > 9 ---
         top_movies = films[(films['vote_average'] > 9) & (films['poster_path'].notna())]
@@ -85,14 +133,18 @@ def home_page():
         cols = st.columns(min(len(selected_top), 5))
         for i, movie in enumerate(selected_top.to_dict(orient='records')):
             with cols[i]:
-                st.image(movie["poster_path"], use_container_width=True)
                 st.markdown(
-                    f"""<a href="?movie={movie['original_title']}" style="text-decoration: none;">
+            f"""
+            <a href="?movie={movie['original_title']}" style="text-decoration: none;">
+                <div style="text-align: center;">
+                    <img src="{movie['poster_path']}" style="width: 100%; height: auto;">
                     <p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
                     <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
-                    </a>""",
-                    unsafe_allow_html=True
-                )
+                </div>
+            </a>
+            """,
+            unsafe_allow_html=True
+        )
 
         # --- UPCOMING ---
         st.markdown("<h2 style='color: #fff;'>À venir <span style='color:#fdc74c';>Prochainement</span></h2>", unsafe_allow_html=True)
@@ -100,6 +152,7 @@ def home_page():
         upcoming = films[(films['release_date'] > today) & 
                          (films['release_date'] <= today + timedelta(days=30)) &
                          (films['poster_path'].notna())]
+        
         if upcoming.empty:
             st.warning("Aucun film prévu dans les 30 prochains jours.")
         else:
@@ -108,9 +161,15 @@ def home_page():
             cols = st.columns(min(len(selected_upcoming), 5))
             for i, movie in enumerate(selected_upcoming.to_dict(orient='records')):
                 with cols[i]:
-                    st.image(movie["poster_path"], use_container_width=True)
                     st.markdown(
-                        f"""<p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
-                        <p style='color: #999; font-size: 12px;'>📅 Sortie le {movie["release_date"].strftime('%d %b %Y')} | {movie["genres"]}</p>""",
+                        f"""
+                        <a href="?movie={movie['original_title']}" style="text-decoration: none;">
+                            <div style="text-align: center;">
+                                <img src="{movie['poster_path']}" style="width: 100%; height: auto;">
+                                <p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
+                                <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
+                            </div>
+                        </a>
+                        """,
                         unsafe_allow_html=True
                     )
