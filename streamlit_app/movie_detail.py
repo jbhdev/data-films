@@ -217,6 +217,7 @@ def show_movie_details(title):
                 if title not in st.session_state.my_list:
                     st.session_state.my_list.append(title)
                     st.success("Ajouté à votre liste !")
+                    
                 else:
                     st.info("Ce film est déjà dans votre liste.")
                 
