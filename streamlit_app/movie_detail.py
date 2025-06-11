@@ -71,7 +71,7 @@ def movie_detail_page():
     # Convertir en liste triée
     all_genres = sorted(all_genres_set)
     
-    # 2 colonnes pour la barre de recher
+    # 2 colonnes pour la barre de recherche
     col1, col2 = st.columns(2)
 
     with col1:
