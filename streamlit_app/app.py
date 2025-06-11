@@ -14,7 +14,7 @@ if "my_list" not in st.session_state:
 st.set_page_config(
         page_title="Moviestar App",
         layout="wide",
-        page_icon="streamlit_app/assets/moviestar.png",
+        page_icon="assets/moviestar.png",
     )
 
 # --- Fonction pour charger l'animation Lottie depuis un fichier local ---
@@ -30,7 +30,7 @@ def load_lottie_local(filepath: str):
         return None
 
 # --- Chemin de votre animation Lottie locale ---
-LOTTIE_FILEPATH = "streamlit_app/assets/panda.json"
+LOTTIE_FILEPATH = "assets/panda.json"
 
 
 
@@ -93,7 +93,7 @@ def main():
 
     # --- Sidebar ---
     with st.sidebar:
-        st.image("streamlit_app/assets/moviestar.png")
+        st.image("assets/moviestar.png")
         st.markdown("<br>", unsafe_allow_html=True)
 
         if st.button("ACCUEIL", key="nav_accueil_sidebar"):
