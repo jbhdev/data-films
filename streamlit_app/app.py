@@ -73,8 +73,7 @@ if not st.session_state.animation_played:
 
 def init_session_state():
     defaults = {
-        'current_page': 'home',
-        
+        'current_page': 'home'
     }
     for key, value in defaults.items():
         if key not in st.session_state:
