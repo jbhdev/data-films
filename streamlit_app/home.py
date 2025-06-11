@@ -7,6 +7,18 @@ from movie_detail import show_movie_details
 
 
 
+def get_movie_card_html(movie):
+    """Génère le HTML pour une carte de film avec target="_self"""
+    return f"""
+    <a href="?movie={movie['original_title']}" style="text-decoration: none;" target="_self">
+        <div style="text-align: center;">
+            <img src="{movie['poster_path']}" style="width: 100%; height: auto;">
+            <p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
+            <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
+        </div>
+    </a>
+    """
+
 def home_page():
     # Auto-refresh toutes les 15 secondes (15000 ms)
     st_autorefresh(interval=15 * 1000, limit=None, key="autorefresh")
@@ -64,15 +76,7 @@ def home_page():
         for i, movie in enumerate(selected_drama.to_dict(orient='records')):
             with cols[i]:
                 st.markdown(
-                    f"""
-                    <a href="?movie={movie['original_title']}" style="text-decoration: none;">
-                        <div style="text-align: center;">
-                            <img src="{movie['poster_path']}" style="width: 100%; height: auto;">
-                            <p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
-                            <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
-                        </div>
-                    </a>
-                    """,
+                    get_movie_card_html(movie),
                     unsafe_allow_html=True
                 )
 
@@ -88,15 +92,7 @@ def home_page():
         for i, movie in enumerate(selected_comedy.to_dict(orient='records')):
             with cols[i]:
                 st.markdown(
-                    f"""
-                    <a href="?movie={movie['original_title']}" style="text-decoration: none;">
-                        <div style="text-align: center;">
-                            <img src="{movie['poster_path']}" style="width: 100%; height: auto;">
-                            <p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
-                            <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
-                        </div>
-                    </a>
-                    """,
+                    get_movie_card_html(movie),
                     unsafe_allow_html=True
                 )
 
@@ -112,15 +108,7 @@ def home_page():
         for i, movie in enumerate(selected_romance.to_dict(orient='records')):
             with cols[i]:
                 st.markdown(
-                    f"""
-                    <a href="?movie={movie['original_title']}" style="text-decoration: none;">
-                        <div style="text-align: center;">
-                            <img src="{movie['poster_path']}" style="width: 100%; height: auto;">
-                            <p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
-                            <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
-                        </div>
-                    </a>
-                    """,
+                    get_movie_card_html(movie),
                     unsafe_allow_html=True
                 )
 
@@ -134,17 +122,9 @@ def home_page():
         for i, movie in enumerate(selected_top.to_dict(orient='records')):
             with cols[i]:
                 st.markdown(
-            f"""
-            <a href="?movie={movie['original_title']}" style="text-decoration: none;">
-                <div style="text-align: center;">
-                    <img src="{movie['poster_path']}" style="width: 100%; height: auto;">
-                    <p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
-                    <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
-                </div>
-            </a>
-            """,
-            unsafe_allow_html=True
-        )
+                    get_movie_card_html(movie),
+                    unsafe_allow_html=True
+                )
 
         # --- UPCOMING ---
         st.markdown("<h2 style='color: #fff;'>À venir <span style='color:#fdc74c';>Prochainement</span></h2>", unsafe_allow_html=True)
@@ -162,15 +142,7 @@ def home_page():
             for i, movie in enumerate(selected_upcoming.to_dict(orient='records')):
                 with cols[i]:
                     st.markdown(
-                        f"""
-                        <a href="?movie={movie['original_title']}" style="text-decoration: none;">
-                            <div style="text-align: center;">
-                                <img src="{movie['poster_path']}" style="width: 100%; height: auto;">
-                                <p style='color: #fff; font-weight: bold; margin-bottom: 2px;'>{movie["original_title"]}</p>
-                                <p style='color: #999; font-size: 12px;'>⭐ {round(movie["vote_average"], 1)} | {movie["release_date"].year} | {movie["genres"]}</p>
-                            </div>
-                        </a>
-                        """,
+                        get_movie_card_html(movie),
                         unsafe_allow_html=True
                     )
 
