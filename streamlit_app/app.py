@@ -6,6 +6,7 @@ import time
 from home import home_page
 from mylist import my_list_page
 from movie_detail import movie_detail_page, show_movie_details, show_actor_page, show_director_page
+from stats import show_stats_page
 from utils.css_loader import load_css
 
 if "my_list" not in st.session_state:
@@ -107,6 +108,10 @@ def main():
         if st.button("MA LISTE", key="nav_ma_liste_sidebar"):
             st.session_state.current_page = 'my_list' 
             st.query_params.clear()
+            
+        if st.button("STATISTIQUES", key="nav_stats_sidebar"):
+            st.session_state.current_page = 'stats'
+            st.query_params.clear()
         
     # --- Main content ---
     if movie_param:
@@ -119,7 +124,9 @@ def main():
         if st.session_state.current_page == 'movie':
             movie_detail_page()  # la page qui liste les films (posters cliquables)
         elif st.session_state.current_page == 'my_list':
-            my_list_page() 
+            my_list_page()
+        elif st.session_state.current_page == 'stats':
+            show_stats_page()
         else:
             home_page()
 
