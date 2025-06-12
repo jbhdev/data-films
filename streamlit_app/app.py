@@ -132,7 +132,7 @@ def main():
     st.markdown(
         """
         <footer class="footer">
-            <p>&copy; 2024 Moviestar App. Tous droits réservés.</p>
+            <p>&copy; 2025 Moviestar App. Tous droits réservés.</p>
             <p>
                 <a href="#" class="footer-link">Règles de Respect de la Vie Privée</a> |
                 <a href="#" class="footer-link">Conditions d'utilisation</a> |
