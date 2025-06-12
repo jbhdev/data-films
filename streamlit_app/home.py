@@ -4,7 +4,7 @@ from streamlit_autorefresh import st_autorefresh
 from datetime import datetime, timedelta
 from utils.css_loader import load_css
 from movie_detail import show_movie_details
-
+from recommendation import films
 
 
 def get_movie_card_html(movie):
@@ -40,8 +40,7 @@ def home_page():
 
     with placeholder.container():
         # Charger les films
-        films = pd.read_csv('datasets/raw/films.csv')
-
+        
         required_columns = ['vote_average', 'poster_path', 'original_title', 'release_date', 'genres']
         missing_columns = [col for col in required_columns if col not in films.columns]
         if missing_columns:
@@ -64,12 +63,32 @@ def home_page():
                         unsafe_allow_html=True
                     )
 
+        # --- UPCOMING ---
+        st.markdown("<h2 style='color: #fff;'>À venir <span style='color:#fdc74c';>Prochainement</span></h2>", unsafe_allow_html=True)
+        today = datetime.today()
+        upcoming = films[(films['release_date'] > today) & 
+                         (films['release_date'] <= today + timedelta(days=30)) &
+                         (films['poster_path'].notna())]
+        
+        if upcoming.empty:
+            st.warning("Aucun film prévu dans les 30 prochains jours.")
+        else:
+            selected_upcoming = upcoming.sample(n=min(len(upcoming), 5)).copy()
+            selected_upcoming['poster_path'] = BASE_URL + selected_upcoming['poster_path'].astype(str)
+            cols = st.columns(min(len(selected_upcoming), 5))
+            for i, movie in enumerate(selected_upcoming.to_dict(orient='records')):
+                with cols[i]:
+                    st.markdown(
+                        get_movie_card_html(movie),
+                        unsafe_allow_html=True
+                    )
+
         # --- DRAMA ---
         st.markdown("<h2 style='color: #fff;'>Notre sélection <span style='color:#fdc74c';>Drame</span></h2>", unsafe_allow_html=True)
 
         drama_movies = films[(films['vote_average'] > 8) & 
                              (films['poster_path'].notna()) &
-                             (films['genres'].str.contains("Drama", case=False, na=False))]
+                             (films['genres'].str.contains("Drame", case=False, na=False))]
         selected_drama = drama_movies.sample(n=min(len(drama_movies), 5)).copy()
         selected_drama['poster_path'] = BASE_URL + selected_drama['poster_path'].astype(str)
         cols = st.columns(min(len(selected_drama), 5))
@@ -85,7 +104,7 @@ def home_page():
 
         comedy_movies = films[(films['vote_average'] > 8) & 
                               (films['poster_path'].notna()) &
-                              (films['genres'].str.contains("Comedy", case=False, na=False))]
+                              (films['genres'].str.contains("Comédie", case=False, na=False))]
         selected_comedy = comedy_movies.sample(n=min(len(comedy_movies), 5)).copy()
         selected_comedy['poster_path'] = BASE_URL + selected_comedy['poster_path'].astype(str)
         cols = st.columns(min(len(selected_comedy), 5))
@@ -126,24 +145,6 @@ def home_page():
                     unsafe_allow_html=True
                 )
 
-        # --- UPCOMING ---
-        st.markdown("<h2 style='color: #fff;'>À venir <span style='color:#fdc74c';>Prochainement</span></h2>", unsafe_allow_html=True)
-        today = datetime.today()
-        upcoming = films[(films['release_date'] > today) & 
-                         (films['release_date'] <= today + timedelta(days=30)) &
-                         (films['poster_path'].notna())]
-        
-        if upcoming.empty:
-            st.warning("Aucun film prévu dans les 30 prochains jours.")
-        else:
-            selected_upcoming = upcoming.sample(n=min(len(upcoming), 5)).copy()
-            selected_upcoming['poster_path'] = BASE_URL + selected_upcoming['poster_path'].astype(str)
-            cols = st.columns(min(len(selected_upcoming), 5))
-            for i, movie in enumerate(selected_upcoming.to_dict(orient='records')):
-                with cols[i]:
-                    st.markdown(
-                        get_movie_card_html(movie),
-                        unsafe_allow_html=True
-                    )
+
 
         
