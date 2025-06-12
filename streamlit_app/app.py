@@ -42,8 +42,6 @@ if not st.session_state.animation_played:
     # Utilisez un conteneur pour l'animation
     animation_placeholder = st.empty()
     
-    
-
     with animation_placeholder: 
         
         lottie_json_data = load_lottie_local(LOTTIE_FILEPATH)

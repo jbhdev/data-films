@@ -8,16 +8,11 @@ from sklearn.neighbors import NearestNeighbors
 from IPython.display import display, HTML
 
 
-
 # Chargement des fichiers nécessaires
 films = pd.read_csv('datasets/raw/films.csv')
 df_processed = joblib.load('datasets/raw/processed_films.pkl')
 nn_model = joblib.load('datasets/raw/nn_model.pkl')
 distances_all, indices_all = joblib.load('datasets/raw/nn_distances.pkl')
-
-films['poster_path'] = films['poster_path'].fillna('')
-films['poster_url'] = "https://image.tmdb.org/t/p/w500" + films['poster_path']
-films['genres']= films['genres'].str.replace('Drama', 'Drame').str.replace('Comedy', 'Comédie').str.replace('Adventure', 'Aventure').str.replace('Family', 'Familial').str.replace('History', 'Histoire').str.replace('Horror', 'Horreur').str.replace('Fantasy', 'Fantastique').str.replace('Sci-Fi', 'Science-Fiction')
 
 # ----------------------------------------------------------------------
 

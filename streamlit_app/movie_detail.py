@@ -156,7 +156,7 @@ def show_movie_details(title):
     
     with cols[0]:
         # Affichage de l'image
-        st.image(movie.get('poster_url', 'https://placehold.co/300x450?text=No+Image'), width=450)
+        st.image(movie.get('poster_url'), width=450)
 
     with cols[1]:
         # Affichage du titre et de l'année
