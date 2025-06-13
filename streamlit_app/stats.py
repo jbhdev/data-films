@@ -3,7 +3,7 @@ import os
 from PIL import Image
 
 def show_stats_page():
-    st.title("Statistiques descriptives")
+    st.title("📊 Statistiques des films")
     
     # Chemin vers le dossier des images de statistiques
     stats_dir = "assets/stats"
@@ -27,8 +27,11 @@ def show_stats_page():
                 image_path = os.path.join(stats_dir, stat_file)
                 image = Image.open(image_path)
                 
-                # Afficher le nom du fichier comme sous-titre
-                st.subheader(stat_file.replace('.png', '').replace('_', ' ').title())
+                # Afficher le nom du fichier comme sous-titre avec uniquement la première lettre en majuscule
+                subtitle = stat_file.replace('.png', '').replace('_', ' ').lower()
+                if subtitle:
+                    subtitle = subtitle[0].upper() + subtitle[1:]
+                st.subheader(subtitle)
                 st.image(image, use_container_width=True)
                 st.markdown("---")  # Ligne de séparation
                 
