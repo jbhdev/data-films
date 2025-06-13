@@ -40,28 +40,36 @@ if 'animation_played' not in st.session_state:
     st.session_state.animation_played = False
 # Si l'animation n'a pas encore été jouée
 if not st.session_state.animation_played:
-    # Utilisez un conteneur pour l'animation
+    
+    # Création d'un conteneur personnalisé pour l'animation
+    st.markdown('<div class="animation-container">', unsafe_allow_html=True)
+    
+    # Utilisation d'un conteneur vide pour l'animation
     animation_placeholder = st.empty()
     
     with animation_placeholder: 
-        
         lottie_json_data = load_lottie_local(LOTTIE_FILEPATH)
         if lottie_json_data:
             st_lottie(
                 lottie_json_data,
-                speed=3,
-                width=600,
-                height=600,
+                speed=1,
+                reverse=False,
+                loop=True,
+                quality="high",
                 key="logo_animation",
-                loop=True
+                width=600,
+                height=600
             )
-            
             # Optionnel : Ajoutez un petit délai pour que l'utilisateur puisse voir l'animation
             time.sleep(3) # Ajustez la durée de l'animation + le temps de pause si besoin
         else:
             # Le message d'erreur est déjà géré dans load_lottie_local
             pass
 
+    # Fermeture du conteneur personnalisé
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    
     # Efface le contenu du placeholder une fois l'animation "terminée"
     animation_placeholder.empty()
 
