@@ -116,3 +116,9 @@ Pour toute question ou problème, veuillez ouvrir une issue sur le dépôt GitHu
 - Plus de 10 000 films dans la base de données
 - Interface optimisée pour tous les appareils
 - Temps de chargement moyen inférieur à 2 secondes
+
+
+
+
+## Lien vers le détail du projet 
+https://wildcodeschool.github.io/data-training-resources/projet/projet-2/#ressources
