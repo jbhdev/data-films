@@ -16,7 +16,7 @@ def normalize_title(title):
     if not isinstance(title, str):
         return ""
     # Enlever les accents
-    title = unicodedata.normalize('NFD', title).encode('ascii', 'ignore').decode('utf-8')
+    #title = unicodedata.normalize('NFD', title).encode('ascii', 'ignore').decode('utf-8')
 
     # Remplacer tirets et underscore par espaces
     title = title.replace("&", "et")
