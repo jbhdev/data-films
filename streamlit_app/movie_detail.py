@@ -2,17 +2,16 @@
 import streamlit as st
 import pandas as pd 
 import ast
-import time
 from streamlit_autorefresh import st_autorefresh
 from utils.css_loader import load_css
 from recommendation import (
+    films,
+    normalize_title,
     get_recommendations_by_title,
     recommend_by_actors,
-    films,
     get_film_index_by_title,
     get_films_by_actor)
 #_______________________________________________________________________________________________________________
-
 
 # Fonction pour afficher les films avec la zone de recherche
 def movie_detail_page():
@@ -86,7 +85,8 @@ def movie_detail_page():
 
     # Filtrer par recherche (contient, insensible à la casse)
     if search_query.strip() != "":
-        mask = filtered_movies["original_title"].str.contains(search_query, case=False, na=False)
+        search_query_norm = normalize_title(search_query)
+        mask = filtered_movies["original_title"].str.contains(search_query_norm, case=False, na=False)
         filtered_movies = filtered_movies[mask]
 
     # Filtrage par genres
@@ -130,6 +130,7 @@ def movie_detail_page():
                     unsafe_allow_html=True
                 )
 
+
 # Fonction pour afficher les details d'un film  
 def show_movie_details(title):
     # Bouton retour aux films
@@ -143,7 +144,8 @@ def show_movie_details(title):
     load_css("movie_style.css")
 
     # Recherche d'un film dans tout le dataframe
-    movie_data = films[films["original_title"] == title]
+    movie_data = films[films["original_title"]== title]
+    
     if movie_data.empty:
         st.error("Film introuvable.")
         return
@@ -153,10 +155,10 @@ def show_movie_details(title):
     
     # Structure principale : affiche + détails côte à côte
     cols = st.columns([1, 2])
-    
+
     with cols[0]:
         # Affichage de l'image
-        st.image(movie.get('poster_url'), width=450)
+        st.image(movie.get('poster_url'), width=500)
 
     with cols[1]:
         # Affichage du titre et de l'année
@@ -188,11 +190,18 @@ def show_movie_details(title):
         filled_stars = int(round(vote_average / 2))  # Convertir sur 5 étoiles
         stars = "⭐" * filled_stars + "☆" * (5 - filled_stars)
 
+        # Modification du format
+        release_date = movie.get("release_date")
+        if pd.notna(release_date):
+            formatted_date = release_date.strftime("%Y-%m-%d")  # ou "%d %B %Y" pour version française lisible
+        else:
+            formatted_date = "Date inconnue"
+
         # Affichage final
         st.markdown(f"""
             <div style="color: white; font-size: 20px;">
                 <p style="margin-bottom: 0;">
-                    {movie.get('release_date', 'Date de sortie inconnue')} | {genres} | {movie.get('runtimeMinutes', 'Durée inconnue')} min
+                {formatted_date} | {genres} | {movie.get('runtimeMinutes', 'Durée inconnue')} min
                 </p>
                 <p></p>
                 <p style="color:white; font-size: 18px;font-weight: bold; margin-bottom: 8px;">Synopsis :</p>

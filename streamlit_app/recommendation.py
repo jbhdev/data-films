@@ -6,10 +6,30 @@ import os
 from utils.css_loader import load_css
 from sklearn.neighbors import NearestNeighbors
 from IPython.display import display, HTML
+import unicodedata
+import re
 
+
+
+# Fonction pour normaliser les titres sinon le film n'est pas affoché
+def normalize_title(title):
+    if not isinstance(title, str):
+        return ""
+    # Enlever les accents
+    title = unicodedata.normalize('NFD', title).encode('ascii', 'ignore').decode('utf-8')
+
+    # Remplacer tirets et underscore par espaces
+    title = title.replace("&", "et")
+    # Nettoyer espaces multiples
+    title = re.sub(r'\s+', ' ', title).strip()
+    return title
 
 # Chargement des fichiers nécessaires
-films = pd.read_csv('datasets/raw/films.csv')
+films = pd.read_csv('datasets/raw/filmss.csv')
+films['original_title'] = films['original_title'].fillna('').apply(normalize_title)
+films["release_date"] = pd.to_datetime(films["release_date"], errors="coerce")
+
+
 df_processed = joblib.load('datasets/raw/processed_films.pkl')
 nn_model = joblib.load('datasets/raw/nn_model.pkl')
 distances_all, indices_all = joblib.load('datasets/raw/nn_distances.pkl')
@@ -80,7 +100,7 @@ def recommend_by_actors(index: int,
     for col in ['acteurs_1', 'acteurs_2', 'actrices']:
         original_data[col] = original_data[col].fillna('').astype(str).str.strip().str.title()
 
-    film_ref = original_data.iloc[index]
+    film_ref = original_data.iloc[int(index)]
     acteurs_ref = set([
         film_ref['acteurs_1'],
         film_ref['acteurs_2'],
