@@ -429,7 +429,7 @@ def show_actor_page(actor_name):
 ## ___________________________________________________________________________________________________________________________
 
 def show_director_page(director_name):
-    load_css("movie_style.css")
+    
     st.markdown(f"<h1 style='text-align: center; color: #fff;'>Films réalisés par {director_name}</h1>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
