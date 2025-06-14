@@ -5,7 +5,8 @@ from PIL import Image
 def show_stats_page():
     st.title("📊 Statistiques des films")
     
-    
+    # Chemin vers le dossier des images de statistiques
+    stats_dir = "assets/stats"
     
     # Vérifier si le dossier existe
     if not os.path.exists(stats_dir):
