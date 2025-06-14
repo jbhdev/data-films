@@ -276,8 +276,7 @@ def home_page():
     # Auto-refresh the page every 15 seconds
     st_autorefresh(interval=15 * 1000, limit=None, key="autorefresh_home")
 
-    # Load external CSS for global styling
-    load_css("style.css")  
+    
 
     # Check for a movie parameter in the URL to display details page
     query_params = st.query_params
