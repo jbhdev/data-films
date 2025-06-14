@@ -4,7 +4,7 @@ from streamlit_autorefresh import st_autorefresh
 from datetime import datetime, timedelta
 
 # Local utilities (assuming these files are in your project)
-from utils.css_loader import load_css
+
 from movie_detail import show_movie_details
 from recommendation import films # Assuming 'films' is a pandas DataFrame
 
