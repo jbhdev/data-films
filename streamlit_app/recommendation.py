@@ -25,7 +25,7 @@ def normalize_title(title):
     return title
 
 # Chargement des fichiers nécessaires
-films = pd.read_csv('../datasets/raw/films.csv')
+films = pd.read_csv('datasets/raw/films.csv')
 films['original_title'] = films['original_title'].fillna('').apply(normalize_title)
 films["release_date"] = pd.to_datetime(films["release_date"], errors="coerce")
 
