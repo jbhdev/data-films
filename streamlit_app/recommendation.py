@@ -6,38 +6,36 @@ import os
 from utils.css_loader import load_css
 from sklearn.neighbors import NearestNeighbors
 from IPython.display import display, HTML
-import unicodedata
 import re
-
-
-
-# Fonction pour normaliser les titres sinon le film n'est pas affoché
-def normalize_title(title):
-    if not isinstance(title, str):
-        return ""
-    # Enlever les accents
-    #title = unicodedata.normalize('NFD', title).encode('ascii', 'ignore').decode('utf-8')
-
-    # Remplacer tirets et underscore par espaces
-    title = title.replace("&", "et")
-    # Nettoyer espaces multiples
-    title = re.sub(r'\s+', ' ', title).strip()
-    return title
-    
-
-# Chargement des fichiers nécessaires
-films = pd.read_csv('datasets/raw/films.csv')
-films['original_title'] = films['original_title'].fillna('').apply(normalize_title)
-films["release_date"] = pd.to_datetime(films["release_date"], errors="coerce")
-
-
-df_processed = joblib.load('datasets/raw/processed_films.pkl')
-nn_model = joblib.load('datasets/raw/nn_model.pkl')
-distances_all, indices_all = joblib.load('datasets/raw/nn_distances.pkl')
 
 # ----------------------------------------------------------------------
 
-# Fonction pour compléter l'URL des posters
+# Fonction pour normaliser les titres
+def normalize_title(title):
+    if not isinstance(title, str):
+        return ""
+    title = title.replace("&", "et")
+    title = re.sub(r'\s+', ' ', title).strip()
+    return title
+
+# ----------------------------------------------------------------------
+
+# Gestion des chemins absolus depuis le dossier du script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+def data_path(filename):
+    return os.path.join(BASE_DIR, "datasets", "raw", filename)
+
+# Chargement des fichiers
+films = pd.read_csv(data_path("films.csv"))
+films['original_title'] = films['original_title'].fillna('').apply(normalize_title)
+films["release_date"] = pd.to_datetime(films["release_date"], errors="coerce")
+
+df_processed = joblib.load(data_path("processed_films.pkl"))
+nn_model = joblib.load(data_path("nn_model.pkl"))
+distances_all, indices_all = joblib.load(data_path("nn_distances.pkl"))
+
+# ----------------------------------------------------------------------
 
 def get_full_poster_url(path):
     load_css("movie_style.css")
@@ -45,7 +43,6 @@ def get_full_poster_url(path):
         return f"https://image.tmdb.org/t/p/w185{path}"
     return "https://via.placeholder.com/185x278?text=No+Image"
 
-# Fonction d'affichage HTML (Notebook)
 def display_posters_with_names(names, poster_paths, title=""): 
     html = f"<h3>{title}</h3><div style='display:flex; gap:20px;'>"
     for name, path in zip(names, poster_paths):
@@ -60,8 +57,6 @@ def display_posters_with_names(names, poster_paths, title=""):
     display(HTML(html))
 
 # ----------------------------------------------------------------------
-
-## Fonctions
 
 def get_film_index_by_title(title: str):
     try:
@@ -126,7 +121,6 @@ def recommend_by_actors(index: int,
     if sort_by and sort_by in filtered.columns:
         filtered = filtered.sort_values(by=sort_by, ascending=False)
 
-    # Affichage des acteurs du film de référence
     names = [film_ref['acteurs_1'], film_ref['acteurs_2'], film_ref['actrices']]
     posters = [film_ref.get('actors_1_posters', ''), film_ref.get('actors_2_posters', ''), film_ref.get('actresse_1_posters', '')]
     display_posters_with_names(names, posters, title="Acteurs du film")
@@ -139,7 +133,6 @@ def recommend_similar_items(index: int, n_neighbors: int = 5) -> pd.DataFrame:
     recs["distance"] = distances[0]
     return recs
 
-
 def normalize_name(name):
     return name.strip().lower() \
         .replace("é", "e").replace("è", "e") \
@@ -147,7 +140,6 @@ def normalize_name(name):
         .replace("ê", "e").replace("ô", "o")
 
 def get_films_by_actor(actor_name: str, original_data: pd.DataFrame = films) -> pd.DataFrame:
-    # Normaliser les colonnes d'acteurs
     for col in ['acteurs_1', 'acteurs_2', 'actrices']:
         original_data[col] = original_data[col].fillna('').astype(str).apply(normalize_name)
 
