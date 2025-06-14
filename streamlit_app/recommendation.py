@@ -37,7 +37,6 @@ distances_all, indices_all = joblib.load(data_path("nn_distances.pkl"))
 # ----------------------------------------------------------------------
 
 def get_full_poster_url(path):
-    load_css("movie_style.css")
     if pd.notna(path) and path != '':
         return f"https://image.tmdb.org/t/p/w185{path}"
     return "https://via.placeholder.com/185x278?text=No+Image"
