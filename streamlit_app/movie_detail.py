@@ -138,8 +138,7 @@ def show_movie_details(title):
         st.query_params.clear()
         st.rerun()
 
-    # CSS
-    load_css("movie_style.css")
+    
 
     # Recherche d'un film dans tout le dataframe
     movie_data = films[films["original_title"]== title]
