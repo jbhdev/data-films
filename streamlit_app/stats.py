@@ -8,9 +8,7 @@ def show_stats_page():
     # Chemin vers le dossier des images de statistiques
     stats_dir = os.path.join(os.path.dirname(__file__), "assets/stats")
     
-    # Débogage : afficher le chemin et l'état du dossier
-    st.write(f"Chemin absolu du dossier stats : {os.path.abspath(stats_dir)}")
-    st.write(f"Dossier existe : {os.path.exists(stats_dir)}")
+    
     
     # Vérifier si le dossier existe, sinon le créer
     if not os.path.exists(stats_dir):
