@@ -4,17 +4,16 @@ from home import home_page
 from mylist import my_list_page
 from movie_detail import movie_detail_page, show_movie_details, show_actor_page, show_director_page
 from stats import show_stats_page
-from utils.css_loader import load_css
+from utils.css_loader import load_css, load_image_path
 
 if "my_list" not in st.session_state:
     st.session_state.my_list = []
 
 st.set_page_config(
-        page_title="Moviestar App",
-        layout="wide",
-        page_icon="assets/moviestar.png",
-    )
-    
+    page_title="Moviestar App",
+    layout="wide",
+    page_icon="🎬",  # ✅ Utilisez un emoji
+)
 
 def init_session_state():
     defaults = {
@@ -25,8 +24,9 @@ def init_session_state():
             st.session_state[key] = value
  
 def main():
-    
     init_session_state()
+    
+    # Chargement des CSS
     load_css("style.css")
     load_css("sidebar_style.css")
 
@@ -38,7 +38,13 @@ def main():
 
     # --- Sidebar ---
     with st.sidebar:
-        st.image("assets/moviestar.png")
+        # ✅ Chargement sécurisé de l'image
+        image_path = load_image_path("moviestar.png")
+        if image_path:
+            st.image(image_path)
+        else:
+            st.markdown("🎬 **Moviestar App**")  # Fallback si image non trouvée
+        
         st.markdown("<br>", unsafe_allow_html=True)
 
         if st.button("ACCUEIL", key="nav_accueil_sidebar"):
@@ -88,5 +94,6 @@ def main():
         """,
         unsafe_allow_html=True
     )
+
 if __name__ == "__main__":
     main()
