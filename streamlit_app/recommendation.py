@@ -24,9 +24,6 @@ def normalize_title(title):
     title = re.sub(r'\s+', ' ', title).strip()
     return title
     
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-csv_path = os.path.join(base_dir, 'datasets', 'raw', 'films.csv')
-films = pd.read_csv(csv_path)
 
 # Chargement des fichiers nécessaires
 films = pd.read_csv('datasets/raw/films.csv')
