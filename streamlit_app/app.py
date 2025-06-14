@@ -4,15 +4,48 @@ from home import home_page
 from mylist import my_list_page
 from movie_detail import movie_detail_page, show_movie_details, show_actor_page, show_director_page
 from stats import show_stats_page
-from utils.css_loader import load_css, load_image_path
 
+# Fonctions CSS intégrées directement
+def load_css(file_name):
+    """
+    Loads CSS from a given file and injects it into the Streamlit app.
+    """
+    # Obtenir le répertoire de ce fichier app.py
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    css_path = os.path.join(current_dir, "css", file_name)
+    
+    try:
+        with open(css_path, 'r', encoding='utf-8') as f:
+            css_content = f.read()
+            st.markdown(f'<style>{css_content}</style>', unsafe_allow_html=True)
+        print(f"✅ CSS chargé: {file_name}")
+    except FileNotFoundError:
+        st.warning(f"⚠️ Fichier CSS '{file_name}' non trouvé dans css/")
+        print(f"Chemin recherché: {css_path}")
+    except Exception as e:
+        st.error(f"❌ Erreur CSS {file_name}: {e}")
+
+def load_image_path(image_name, folder='assets'):
+    """
+    Retourne le chemin vers une image.
+    """
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    image_path = os.path.join(current_dir, folder, image_name)
+    
+    if os.path.exists(image_path):
+        return image_path
+    else:
+        st.warning(f"⚠️ Image '{image_name}' non trouvée dans {folder}/")
+        return None
+
+# Initialisation
 if "my_list" not in st.session_state:
     st.session_state.my_list = []
 
 st.set_page_config(
     page_title="Moviestar App",
     layout="wide",
-    page_icon="🎬",  # ✅ Utilisez un emoji
+    page_icon="🎬",
 )
 
 def init_session_state():
@@ -38,12 +71,12 @@ def main():
 
     # --- Sidebar ---
     with st.sidebar:
-        # ✅ Chargement sécurisé de l'image
+        # Chargement sécurisé de l'image
         image_path = load_image_path("moviestar.png")
         if image_path:
             st.image(image_path)
         else:
-            st.markdown("🎬 **Moviestar App**")  # Fallback si image non trouvée
+            st.markdown("🎬 **Moviestar App**")
         
         st.markdown("<br>", unsafe_allow_html=True)
 
@@ -72,7 +105,7 @@ def main():
         show_director_page(director_param)
     else:    
         if st.session_state.current_page == 'movie':
-            movie_detail_page()  # la page qui liste les films (posters cliquables)
+            movie_detail_page()
         elif st.session_state.current_page == 'my_list':
             my_list_page()
         elif st.session_state.current_page == 'stats':
