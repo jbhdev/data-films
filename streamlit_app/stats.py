@@ -15,15 +15,6 @@ def show_stats_page():
         os.makedirs(stats_dir)
         st.warning(f"Le dossier {stats_dir} a été créé, mais il est vide. Ajoutez des images pour afficher des statistiques.")
         return
-    
-    # Lister tous les fichiers du dossier
-    try:
-        stat_files = [f for f in os.listdir(stats_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
-        st.write(f"Fichiers trouvés : {stat_files}")
-        
-        if not stat_files:
-            st.warning("Aucune image trouvée dans le dossier des statistiques.")
-            return
         
         # Afficher chaque image
         for stat_file in sorted(stat_files):
