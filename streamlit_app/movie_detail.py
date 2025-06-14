@@ -3,7 +3,6 @@ import streamlit as st
 import pandas as pd 
 import ast
 from streamlit_autorefresh import st_autorefresh
-from utils.css_loader import load_css
 from recommendation import (
     films,
     normalize_title,
