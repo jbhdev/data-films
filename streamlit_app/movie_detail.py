@@ -18,8 +18,7 @@ def movie_detail_page():
     # Auto-refresh toutes les 15 secondes (15000 ms)
     st_autorefresh(interval=15 * 1000, key="refresh_movies")
 
-    # CSS
-    load_css("movie_style.css")
+    
     
     # CSS personnalisé pour modifier la couleur du texte dans les zones de saisie
     st.markdown("""
