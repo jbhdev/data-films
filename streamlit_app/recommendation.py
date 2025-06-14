@@ -3,7 +3,6 @@
 import pandas as pd
 import joblib
 import os
-from utils.css_loader import load_css
 from sklearn.neighbors import NearestNeighbors
 from IPython.display import display, HTML
 import re
