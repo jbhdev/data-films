@@ -6,16 +6,22 @@ def show_stats_page():
     st.title("📊 Statistiques des films")
     
     # Chemin vers le dossier des images de statistiques
-    stats_dir = "assets/stats"
+    stats_dir = os.path.join(os.path.dirname(__file__), "assets/stats")
     
-    # Vérifier si le dossier existe
+    # Débogage : afficher le chemin et l'état du dossier
+    st.write(f"Chemin absolu du dossier stats : {os.path.abspath(stats_dir)}")
+    st.write(f"Dossier existe : {os.path.exists(stats_dir)}")
+    
+    # Vérifier si le dossier existe, sinon le créer
     if not os.path.exists(stats_dir):
-        st.warning(f"Le dossier {stats_dir} n'existe pas.")
+        os.makedirs(stats_dir)
+        st.warning(f"Le dossier {stats_dir} a été créé, mais il est vide. Ajoutez des images pour afficher des statistiques.")
         return
     
     # Lister tous les fichiers du dossier
     try:
-        stat_files = [f for f in os.listdir(stats_dir) if f.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+        stat_files = [f for f in os.listdir(stats_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+        st.write(f"Fichiers trouvés : {stat_files}")
         
         if not stat_files:
             st.warning("Aucune image trouvée dans le dossier des statistiques.")
