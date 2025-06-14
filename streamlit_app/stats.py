@@ -28,7 +28,7 @@ def show_stats_page():
                 image = Image.open(image_path)
                 
                 # Afficher le nom du fichier comme sous-titre avec uniquement la première lettre en majuscule
-                subtitle = stat_file.replace('.png', '').replace('_', ' ').lower()
+                subtitle = stat_file.replace('.png', '').replace('_', ' ').casefold()
                 if subtitle:
                     subtitle = subtitle[0].upper() + subtitle[1:]
                 st.subheader(subtitle)
